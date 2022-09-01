@@ -1,6 +1,6 @@
 import { ConnectionOptions, createConnection } from "typeorm";
 import { SnakeNamingStrategy } from "typeorm-naming-strategies";
-import { env } from "../config/index";
+import { env } from "../config";
 
 const connectDB = async (): Promise<void> => {
   try {

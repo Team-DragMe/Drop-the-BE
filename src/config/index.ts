@@ -19,4 +19,8 @@ export const env = {
     password: process.env.DB_PASSWORD,
     name: process.env.DB_NAME,
   },
+  jwt: {
+    jwtSecret: process.env.JWT_SECRET as string,
+    jwtAlgo: process.env.JWT_ALGO as string,
+  },
 };
