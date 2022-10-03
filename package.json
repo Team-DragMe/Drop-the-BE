@@ -1,7 +1,7 @@
 {
-  "name": "node-typescript-init",
+  "name": "typescript-init",
   "version": "1.0.0",
-  "description": "",
+  "description": "- [컨벤션 모음](https://www.notion.so/dragme/26a797f13a0a4398aaa224b4bdcb3187)",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon",
@@ -32,5 +32,13 @@
     "reflect-metadata": "^0.1.13",
     "typeorm": "0.2.45",
     "typeorm-naming-strategies": "^4.1.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://Chedda98@github.com/Team-DragMe/Drop-the-BE.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Team-DragMe/Drop-the-BE/issues"
+  },
+  "homepage": "https://github.com/Team-DragMe/Drop-the-BE#readme"
 }
