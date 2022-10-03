@@ -4,20 +4,20 @@ import { User } from "./User";
 @Entity({ name: "dailynotes" })
 export class DailyNote {
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
-  @CreateDateColumn({ name: "plan_date", nullable: false })
-  createdAt: Date;
+  @CreateDateColumn({ name: "plan_date" })
+  createdAt?: Date;
 
-  @Column({ nullable: false })
-  emoji: string;
+  @Column()
+  emoji?: string;
 
-  @Column({ nullable: false })
-  feel: string;
+  @Column()
+  feel?: string;
 
-  @Column({ nullable: false })
-  memo: string;
+  @Column()
+  memo?: string;
 
   @ManyToOne(() => User, (user) => user.dailynotes)
-  user: Promise<User>;
+  user?: Promise<User>;
 }
