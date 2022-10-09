@@ -7,13 +7,13 @@ import { RoutineRoad } from "./RoutineRoad";
 @Entity({ name: "users" })
 export class User {
   @PrimaryGeneratedColumn()
-  id?: number;
+  id!: number;
 
   @Column({ name: "sns_id", nullable: false })
-  snsId?: number;
+  snsId!: number;
   
   @Column({ nullable: false })
-  email?: string;
+  email!: string;
 
   // 마이페이지 뷰 작업 나오면 글자수 제한 수정 필요
   @Column({ type: "varchar", length: 10, nullable: false })
@@ -21,17 +21,17 @@ export class User {
 
   // 로그인한 플랫폼. ex) google
   @Column({ nullable: false })
-  provider?: string;
+  provider!: string;
 
-  @OneToMany(() => DailyPlan, (dailyplans) => dailyplans.user)
-  dailyplans?: Promise<DailyPlan[]>;
+  @OneToMany(() => DailyPlan, dailyplans => dailyplans.user)
+  dailyplans?: DailyPlan[];
 
   @OneToMany(() => DailyNote, (dailynotes) => dailynotes.user)
-  dailynotes?: Promise<DailyPlan[]>;
+  dailynotes?: DailyPlan[];
 
   @OneToMany(() => Reschedule, (reschedules) => reschedules.user)
-  reschedules?: Promise<Reschedule[]>;
+  reschedules?: Reschedule[];
 
   @OneToMany(() => RoutineRoad, (routineroads) => routineroads.user)
-  routineroads?: Promise<Reschedule[]>;
+  routineroads?: Reschedule[];
 }

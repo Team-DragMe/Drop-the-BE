@@ -4,7 +4,7 @@ import { User } from "./User";
 @Entity({ name: "routineroads" })
 export class RoutineRoad {
   @PrimaryGeneratedColumn()
-  id?: number;
+  id!: number;
 
   @Column({ name: "plan_name", length: 100, nullable: false })
   planName?: string;
@@ -13,5 +13,5 @@ export class RoutineRoad {
   colorchip?: string;
 
   @ManyToOne(() => User, (user) => user.routineroads)
-  user?: Promise<User>;
+  user?: User;
 }

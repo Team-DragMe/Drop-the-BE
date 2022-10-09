@@ -4,7 +4,7 @@ import { User } from "./User";
 @Entity({ name: "dailynotes" })
 export class DailyNote {
   @PrimaryGeneratedColumn()
-  id?: number;
+  id!: number;
 
   @CreateDateColumn({ name: "plan_date" })
   createdAt?: Date;
@@ -19,5 +19,5 @@ export class DailyNote {
   memo?: string;
 
   @ManyToOne(() => User, (user) => user.dailynotes)
-  user?: Promise<User>;
+  user?: User;
 }
