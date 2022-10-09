@@ -6,7 +6,7 @@ export class DailyPlan {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @CreateDateColumn({ name: "plan_date", nullable: false })
+  @CreateDateColumn({ type: "timestamp", name: "plan_date", nullable: false })
   createdAt?: Date;
 
   @Column({ name: "plan_name", length: 100, nullable: false })

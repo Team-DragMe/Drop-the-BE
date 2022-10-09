@@ -16,7 +16,7 @@ export class User {
   email!: string;
 
   // 마이페이지 뷰 작업 나오면 글자수 제한 수정 필요
-  @Column({ type: "varchar", length: 10, nullable: false })
+  @Column({ length: 10, nullable: false })
   nick?: string;
 
   // 로그인한 플랫폼. ex) google

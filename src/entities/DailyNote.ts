@@ -6,7 +6,7 @@ export class DailyNote {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @CreateDateColumn({ name: "plan_date" })
+  @CreateDateColumn({ type: "timestamp", name: "plan_date" })
   createdAt?: Date;
 
   @Column()
