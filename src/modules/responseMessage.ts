@@ -6,7 +6,7 @@ const message = {
   NULL_VALUE_TOKEN: '토큰 만료',
   INVALID_TOKEN: '유효하지 않은 토큰',
 
-  FETCH_DAILY_PLAN_SUCCESS: '데일리 플랜 조회 성공 (임시)',
+  FETCH_DAILY_PLAN_SUCCESS: '데일리 플랜 조회 성공 (테스트)',
 };
 
 export default message;

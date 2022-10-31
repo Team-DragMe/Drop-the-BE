@@ -18,6 +18,8 @@ export const env = {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     name: process.env.DB_NAME,
+    synchronize: process.env.TYPEORM_SYNCHRONIZE === 'true',
+    logging: process.env.TYPEORM_LOGGING === 'true',
   },
   jwt: {
     jwtSecret: process.env.JWT_SECRET as string,

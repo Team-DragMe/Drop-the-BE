@@ -1,6 +1,7 @@
-import { ConnectionOptions, createConnection } from 'typeorm';
+import { ConnectionOptions, createConnection, useContainer } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { env } from '../config';
+import Container from 'typedi';
 
 const connectDB = async (): Promise<void> => {
   try {
@@ -11,11 +12,13 @@ const connectDB = async (): Promise<void> => {
       username: env.database.username,
       password: env.database.password,
       database: env.database.name,
-      synchronize: true,
-      logging: true,
+      synchronize: env.database.synchronize,
+      logging: env.database.logging,
       entities: ['src/entities/**/*.ts'],
       namingStrategy: new SnakeNamingStrategy(),
     };
+
+    useContainer(Container);
 
     await createConnection(connectionOption);
     console.log('PostgresSQL Connected ...');

@@ -1,24 +1,23 @@
 import express, { Request, Response, NextFunction } from 'express';
 const app = express();
 import connectDB from './loaders/db';
-import routes from './routes';
 import { routingControllerOptions } from './config/RoutingConfig';
-import { useExpressServer } from 'routing-controllers';
+import { useContainer, useExpressServer } from 'routing-controllers';
+import Container from 'typedi';
+import bodyParser from 'body-parser';
 
 require('dotenv').config();
 
 connectDB();
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
-// app.use(routes); //라우터
-// error handler
-
 interface ErrorType {
   message: string;
   status: number;
 }
+
+// Middlewares
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(function (
   err: ErrorType,
@@ -34,7 +33,13 @@ app.use(function (
   res.render('error');
 });
 
-useExpressServer(routingControllerOptions);
+// Routing
+try {
+  useContainer(Container);
+  useExpressServer(app, routingControllerOptions);
+} catch (error) {
+  console.log(error);
+}
 
 app
   .listen(process.env.PORT, () => {
