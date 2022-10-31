@@ -12,8 +12,8 @@ export class DailyPlan {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @CreateDateColumn({ type: 'timestamp', name: 'plan_date', nullable: false })
-  createdAt?: Date;
+  @Column({ name: 'plan_date', nullable: false })
+  planDate?: Date;
 
   @Column({ name: 'plan_name', length: 100, nullable: false })
   planName?: string;
@@ -29,4 +29,7 @@ export class DailyPlan {
 
   @ManyToOne(() => User, (user) => user.dailyplans)
   user?: User;
+
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at', nullable: false })
+  createdAt?: Date;
 }

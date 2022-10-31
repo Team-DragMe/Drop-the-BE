@@ -2,6 +2,9 @@ import express, { Request, Response, NextFunction } from 'express';
 const app = express();
 import connectDB from './loaders/db';
 import routes from './routes';
+import { routingControllerOptions } from './config/RoutingConfig';
+import { useExpressServer } from 'routing-controllers';
+
 require('dotenv').config();
 
 connectDB();
@@ -9,7 +12,7 @@ connectDB();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(routes); //라우터
+// app.use(routes); //라우터
 // error handler
 
 interface ErrorType {
@@ -30,6 +33,8 @@ app.use(function (
   res.status(err.status || 500);
   res.render('error');
 });
+
+useExpressServer(routingControllerOptions);
 
 app
   .listen(process.env.PORT, () => {
