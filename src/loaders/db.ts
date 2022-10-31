@@ -1,11 +1,11 @@
-import { ConnectionOptions, createConnection } from "typeorm";
-import { SnakeNamingStrategy } from "typeorm-naming-strategies";
-import { env } from "../config";
+import { ConnectionOptions, createConnection } from 'typeorm';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { env } from '../config';
 
 const connectDB = async (): Promise<void> => {
   try {
     const connectionOption: ConnectionOptions = {
-      type: "postgres",
+      type: 'postgres',
       host: env.database.host,
       port: env.database.dbPort,
       username: env.database.username,
@@ -13,12 +13,12 @@ const connectDB = async (): Promise<void> => {
       database: env.database.name,
       synchronize: true,
       logging: true,
-      entities: ["src/entities/**/*.ts"],
+      entities: ['src/entities/**/*.ts'],
       namingStrategy: new SnakeNamingStrategy(),
     };
 
     await createConnection(connectionOption);
-    console.log("PostgresSQL Connected ...");
+    console.log('PostgresSQL Connected ...');
   } catch (error) {
     throw error;
   }

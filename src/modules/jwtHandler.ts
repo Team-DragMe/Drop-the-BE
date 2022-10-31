@@ -1,5 +1,5 @@
-import jwt from "jsonwebtoken";
-import { env } from "../config";
+import jwt from 'jsonwebtoken';
+import { env } from '../config';
 
 const getToken = (userId: any): string => {
   const payload: any = {
@@ -8,7 +8,7 @@ const getToken = (userId: any): string => {
     },
   };
   const accesstoken = jwt.sign(payload, env.jwt.jwtSecret, {
-    expiresIn: "2h",
+    expiresIn: '2h',
   });
   return accesstoken;
 };

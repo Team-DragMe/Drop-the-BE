@@ -1,17 +1,17 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
-import { DailyPlan } from "./DailyPlan";
-import { DailyNote } from "./DailyNote";
-import { Reschedule } from "./Reschedule";
-import { RoutineRoad } from "./RoutineRoad";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { DailyPlan } from './DailyPlan';
+import { DailyNote } from './DailyNote';
+import { Reschedule } from './Reschedule';
+import { RoutineRoad } from './RoutineRoad';
 
-@Entity({ name: "users" })
+@Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ name: "sns_id", nullable: false })
+  @Column({ name: 'sns_id', nullable: false })
   snsId!: number;
-  
+
   @Column({ nullable: false })
   email!: string;
 
@@ -23,7 +23,7 @@ export class User {
   @Column({ nullable: false })
   provider!: string;
 
-  @OneToMany(() => DailyPlan, dailyplans => dailyplans.user)
+  @OneToMany(() => DailyPlan, (dailyplans) => dailyplans.user)
   dailyplans?: DailyPlan[];
 
   @OneToMany(() => DailyNote, (dailynotes) => dailynotes.user)
