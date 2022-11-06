@@ -1,12 +1,18 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from "typeorm";
-import { User } from "./User";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+} from 'typeorm';
+import { User } from './User';
 
-@Entity({ name: "dailynotes" })
+@Entity({ name: 'dailynotes' })
 export class DailyNote {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @CreateDateColumn({ type: "timestamp", name: "plan_date" })
+  @CreateDateColumn({ type: 'timestamp', name: 'plan_date' })
   createdAt?: Date;
 
   @Column()

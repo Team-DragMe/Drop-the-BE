@@ -1,7 +1,7 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 
 // Set the NODE_ENV to 'development' by default
-process.env.NODE_ENV = process.env.NODE_ENV || "development";
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 const envFound = dotenv.config();
 if (envFound.error) {
@@ -11,13 +11,15 @@ if (envFound.error) {
 }
 
 export const env = {
-  port: parseInt(process.env.PORT as string, 10) as number,
+  port: parseInt(process.env.PORT as string, 10),
   database: {
     host: process.env.DB_HOST,
-    dbPort: parseInt(process.env.DB_PORT as string, 10) as number,
+    dbPort: parseInt(process.env.DB_PORT as string, 10),
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     name: process.env.DB_NAME,
+    synchronize: process.env.TYPEORM_SYNCHRONIZE === 'true',
+    logging: process.env.TYPEORM_LOGGING === 'true',
   },
   jwt: {
     jwtSecret: process.env.JWT_SECRET as string,
