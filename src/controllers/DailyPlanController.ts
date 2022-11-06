@@ -27,7 +27,6 @@ export class DailyPlanController {
   })
   public async fetchData(@Res() res: Response): Promise<Response> {
     try {
-      console.log('fetchData');
       const list = await this.dailyPlanService.fetchDailyPlan();
 
       return res
