@@ -7,6 +7,8 @@ const message = {
   INVALID_TOKEN: '유효하지 않은 토큰',
 
   FETCH_DAILY_PLAN_SUCCESS: '데일리 플랜 조회 성공 (테스트)',
+
+  FETCH_TIMEBLOCK_SUCCESS: '타임블록 조회 성공',
 };
 
 export default message;
