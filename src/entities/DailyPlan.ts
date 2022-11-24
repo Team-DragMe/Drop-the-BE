@@ -21,11 +21,11 @@ export class DailyPlan {
   @Column({ nullable: false })
   colorchip?: string;
 
-  @Column({ name: 'plan_time' })
-  planTime?: number;
+  @Column('int', { name: 'plan_time', array: true, nullable: true })
+  planTime?: number[];
 
-  @Column({ name: 'fulfill_time' })
-  fulfillTime?: number;
+  @Column('int', { name: 'fulfill_time', array: true, nullable: true })
+  fulfillTime?: number[];
 
   @ManyToOne(() => User, (user) => user.dailyplans)
   user?: User;
