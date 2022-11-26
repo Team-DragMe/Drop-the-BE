@@ -33,10 +33,7 @@ export class DailyPlanService {
         },
       });
 
-      const totalPlanList = totalPlan.pop()?.planList;
-      if (!totalPlanList) {
-        return null;
-      }
+      const totalPlanList = totalPlan.pop()?.planList as number[];
 
       switch (type) {
         case 'daily': {
@@ -56,7 +53,6 @@ export class DailyPlanService {
       }
     } catch (error) {
       console.log(error);
-
       return null;
     }
   }
