@@ -9,6 +9,7 @@ import {
   Param,
   QueryParams,
 } from 'routing-controllers';
+import { IsString } from 'class-validator';
 import { DailyPlanService } from '../services/PlanService';
 import { OpenAPI } from 'routing-controllers-openapi';
 import { Response } from 'express';
@@ -16,12 +17,18 @@ import statusCode from '../modules/statusCode';
 import message from '../modules/responseMessage';
 import util from '../modules/util';
 
+class GetTypeAndDateQuery {
+  @IsString()
+  type!: string;
+  planDate!: string;
+}
+
 @JsonController('/plan')
 export class DailyPlanController {
   constructor(private dailyPlanService: DailyPlanService) {}
 
   @HttpCode(200)
-  @Get('/:userId/:type/:planDate')
+  @Get('/:userId')
   @OpenAPI({
     summary: '계획 블록 조회',
     description: '일간 계획, 우회할 계획, 루틴로드 조회',
@@ -31,14 +38,13 @@ export class DailyPlanController {
     @Req() req: Request,
     @Res() res: Response,
     @Param('userId') userId: string,
-    @Param('type') type: string,
-    @Param('planDate') planDate: string,
+    @QueryParams() query: GetTypeAndDateQuery,
   ): Promise<Response> {
     try {
       const data = await this.dailyPlanService.getPlans(
         +userId,
-        type,
-        planDate,
+        query.type,
+        query.planDate,
       );
 
       return res

@@ -53,7 +53,7 @@ export class DailyPlanService {
       }
     } catch (error) {
       console.log(error);
-      return null;
+      throw error;
     }
   }
 }
