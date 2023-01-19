@@ -8,14 +8,17 @@ import {
   Req,
   Param,
   QueryParams,
+  UseBefore,
+  UseAfter,
 } from 'routing-controllers';
+import errorValidator from '../middleware/errorValidator';
 import { IsString } from 'class-validator';
 import { DailyPlanService } from '../services/PlanService';
 import { OpenAPI } from 'routing-controllers-openapi';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import statusCode from '../modules/statusCode';
 import message from '../modules/responseMessage';
-import util from '../modules/util';
+import { success, fail } from '../modules/util';
 
 class GetTypeAndDateQuery {
   @IsString()
@@ -39,25 +42,22 @@ export class DailyPlanController {
     @Res() res: Response,
     @Param('userId') userId: string,
     @QueryParams() query: GetTypeAndDateQuery,
-  ): Promise<Response> {
+  ) {
     try {
       const data = await this.dailyPlanService.getPlans(
         +userId,
         query.type,
         query.planDate,
       );
-
       return res
         .status(statusCode.OK)
-        .send(util.success(statusCode.OK, message.READ_PLAN_SUCCESS, data));
+        .send(success(statusCode.OK, message.READ_PLAN_SUCCESS, data));
     } catch (error) {
+      console.log(error);
       return res
         .status(statusCode.INTERNAL_SERVER_ERROR)
         .send(
-          util.fail(
-            statusCode.INTERNAL_SERVER_ERROR,
-            message.INTERNAL_SERVER_ERROR,
-          ),
+          fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR),
         );
     }
   }

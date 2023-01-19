@@ -15,15 +15,6 @@ export class DailyPlanService {
   ) {}
 
   public async getPlans(userId: number, type: string, planDate: string) {
-    let planType: 'daily' | 'reschedule' | 'routine';
-    if (type == 'daily') {
-      planType = 'daily';
-    } else if (type == 'reschedule') {
-      planType = 'reschedule';
-    } else if (type == 'routine') {
-      planType = 'routine';
-    }
-
     try {
       const totalPlan = await this.planOrderRepository.find({
         where: {
@@ -32,6 +23,10 @@ export class DailyPlanService {
           planDate,
         },
       });
+
+      if (totalPlan.length == 0) {
+        return null;
+      }
 
       const totalPlanList = totalPlan.pop()?.planList as number[];
 
@@ -52,7 +47,6 @@ export class DailyPlanService {
         }
       }
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }
