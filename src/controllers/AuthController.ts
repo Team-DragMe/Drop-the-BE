@@ -1,8 +1,5 @@
-import { CreateUserDto } from './../dtos/UserDto';
-import { createRefresh, sign } from './../modules/jwtHandler';
-import { SocialUser } from '../dtos/SocialUser';
-import { Request, Response } from 'express';
 import {
+  Get,
   HttpCode,
   JsonController,
   Post,
@@ -10,6 +7,10 @@ import {
   Res,
   UseBefore,
 } from 'routing-controllers';
+import { CreateUserDto } from './../dtos/UserDto';
+import { createRefresh, sign, verify } from './../modules/jwtHandler';
+import { SocialUser } from '../dtos/SocialUser';
+import { Request, Response } from 'express';
 import { OpenAPI } from 'routing-controllers-openapi';
 import errorValidator from '../middleware/errorValidator';
 import exceptionMessage from '../modules/exceptionMessage';
@@ -102,6 +103,66 @@ export class AuthController {
       return res
         .status(statusCode.OK)
         .send(success(statusCode.OK, message.SIGNIN_SUCCESS, data));
+    } catch (error) {
+      console.log(error);
+      return res
+        .status(statusCode.INTERNAL_SERVER_ERROR)
+        .send(
+          fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR),
+        );
+    }
+  }
+
+  @HttpCode(200)
+  @Get('/token')
+  @OpenAPI({
+    summary: '토큰 재발급',
+    description: 'refreshToken을 이용해서 accessToken을 재발급합니다.',
+    statusCode: '200',
+  })
+  public async getToken(@Req() req: Request, @Res() res: Response) {
+    const refreshToken = req.headers.refreshToken;
+
+    //* 토큰이 없다면
+    if (!refreshToken)
+      return res
+        .status(statusCode.BAD_REQUEST)
+        .send(fail(statusCode.BAD_REQUEST, message.EMPTY_TOKEN));
+
+    try {
+      const refresh = verify(refreshToken as string);
+
+      //* 만료된 refreshToken
+      if (refresh == exceptionMessage.TOKEN_EXPIRED) {
+        return res
+          .status(statusCode.UNAUTHORIZED)
+          .send(fail(statusCode.UNAUTHORIZED, message.NULL_VALUE_TOKEN));
+      }
+
+      //* 유효하지 않은 refreshToken
+      if (refresh == exceptionMessage.TOKEN_INVALID) {
+        return res
+          .status(statusCode.UNAUTHORIZED)
+          .send(fail(statusCode.UNAUTHORIZED, message.INVALID_TOKEN));
+      }
+
+      const user = await this.authService.findUserByRfToken(
+        refreshToken as string,
+      );
+
+      if (!user) {
+        return res
+          .status(statusCode.UNAUTHORIZED)
+          .send(fail(statusCode.UNAUTHORIZED, message.INVALID_TOKEN));
+      }
+
+      const data = {
+        accessToken: sign(user.id),
+      };
+
+      return res
+        .status(statusCode.OK)
+        .send(success(statusCode.OK, message.CREATE_TOKEN_SUCCESS, data));
     } catch (error) {
       console.log(error);
       return res

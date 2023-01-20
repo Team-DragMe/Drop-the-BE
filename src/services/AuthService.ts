@@ -1,7 +1,6 @@
 import { UserRepository } from './../repositories/UserRepository';
 import { Service } from 'typedi';
 import axios from 'axios';
-import { env } from '../config';
 import { SocialUser } from '../dtos/SocialUser';
 import exceptionMessage from '../modules/exceptionMessage';
 import { InjectRepository } from 'typeorm-typedi-extensions';
@@ -50,7 +49,7 @@ export class AuthService {
   }
 
   public async saveRefreshToken(user: User, refreshToken: string) {
-    const queryRunner = await getConnection().createQueryRunner();
+    const queryRunner = getConnection().createQueryRunner();
     await queryRunner.startTransaction();
 
     try {
@@ -70,6 +69,23 @@ export class AuthService {
       await queryRunner.rollbackTransaction();
     } finally {
       await queryRunner.release();
+    }
+  }
+
+  public async findUserByRfToken(refreshToken: string) {
+    try {
+      const user = await this.userRepository.findOne({
+        where: {
+          refreshToken: refreshToken,
+        },
+      });
+
+      if (!user) {
+        return null;
+      }
+      return user;
+    } catch (error) {
+      console.log(error);
     }
   }
 }
