@@ -23,6 +23,9 @@ export class User {
   @Column({ nullable: false })
   provider!: string;
 
+  @Column({ name: 'refresh_token', nullable: true })
+  refreshToken?: string;
+
   @OneToMany(() => DailyPlan, (dailyplans) => dailyplans.user)
   dailyplans?: DailyPlan[];
 
