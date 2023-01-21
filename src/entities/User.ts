@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { DailyPlan } from './DailyPlan';
+import { DailyPlan } from './Plan';
 import { DailyNote } from './DailyNote';
 import { Reschedule } from './Reschedule';
 import { RoutineRoad } from './RoutineRoad';
