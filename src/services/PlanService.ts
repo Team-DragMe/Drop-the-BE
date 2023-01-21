@@ -4,7 +4,7 @@ import { InjectRepository } from 'typeorm-typedi-extensions';
 import { PlanRepository } from '../repositories/PlanRepository';
 
 @Service()
-export class DailyPlanService {
+export class PlanService {
   constructor(
     @InjectRepository() private planRepository: PlanRepository,
     @InjectRepository() private planOrderRepository: PlanOrderRepository,

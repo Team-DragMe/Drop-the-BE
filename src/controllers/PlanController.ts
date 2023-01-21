@@ -12,7 +12,7 @@ import {
 } from 'routing-controllers';
 import errorValidator from '../middleware/errorValidator';
 import { IsString } from 'class-validator';
-import { DailyPlanService } from '../services/PlanService';
+import { PlanService } from '../services/PlanService';
 import { OpenAPI } from 'routing-controllers-openapi';
 import { Request, Response } from 'express';
 import statusCode from '../modules/statusCode';
@@ -27,7 +27,7 @@ class GetTypeAndDateQuery {
 
 @JsonController('/plan')
 export class DailyPlanController {
-  constructor(private dailyPlanService: DailyPlanService) {}
+  constructor(private planService: PlanService) {}
 
   @HttpCode(200)
   @Get('/:userId')
@@ -43,7 +43,7 @@ export class DailyPlanController {
     @QueryParams() query: GetTypeAndDateQuery,
   ) {
     try {
-      const data = await this.dailyPlanService.getPlans(
+      const data = await this.planService.getPlans(
         +userId,
         query.type,
         query.date,
@@ -78,7 +78,7 @@ export class DailyPlanController {
     @BodyParam('colorChip') colorChip: string,
   ) {
     try {
-      const data = await this.dailyPlanService.updatePlans(
+      const data = await this.planService.updatePlans(
         +userId,
         +planId,
         planName,
