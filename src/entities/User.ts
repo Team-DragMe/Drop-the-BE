@@ -17,6 +17,9 @@ export class User {
   @Column({ length: 10, nullable: false })
   nick?: string;
 
+  @Column({ length: 35 })
+  goal?: string;
+
   // 로그인한 플랫폼. ex) google
   @Column({ nullable: false })
   provider!: string;
