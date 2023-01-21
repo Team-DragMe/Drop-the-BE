@@ -78,15 +78,20 @@ export class DailyPlanController {
     @BodyParam('colorChip') colorChip: string,
   ) {
     try {
-      await this.dailyPlanService.updatePlans(
+      const data = await this.dailyPlanService.updatePlans(
         +userId,
         +planId,
         planName,
         colorChip,
       );
+      if (!data) {
+        return res
+          .status(statusCode.BAD_REQUEST)
+          .send(fail(statusCode.BAD_REQUEST, message.UPDATE_PLAN_FAIL));
+      }
       return res
         .status(statusCode.OK)
-        .send(success(statusCode.OK, message.UPDATE_PLAN_NAME_SUCCESS));
+        .send(success(statusCode.OK, message.UPDATE_PLAN_SUCCESS));
     } catch (error) {
       console.log(error);
       return res
