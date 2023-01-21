@@ -15,7 +15,7 @@ export class PlanOrder {
   type?: string;
 
   @Column({ name: 'plan_date', nullable: false })
-  planDate?: string;
+  planDate?: Date;
 
   @Column('int', { name: 'plan_list', array: true })
   planList?: number[];
