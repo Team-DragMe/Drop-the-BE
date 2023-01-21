@@ -1,16 +1,12 @@
 import { PlanOrderRepository } from './../repositories/PlanOrderRepository';
 import { Service } from 'typedi';
 import { InjectRepository } from 'typeorm-typedi-extensions';
-import { DailyPlanRepository } from '../repositories/DailyPlanRepository';
-import { RescheduleRepository } from './../repositories/RescheduleRepository';
-import { RoutineRepository } from './../repositories/RoutineRepository';
+import { PlanRepository } from '../repositories/PlanRepository';
 
 @Service()
 export class DailyPlanService {
   constructor(
-    @InjectRepository() private dailyPlanRepository: DailyPlanRepository,
-    @InjectRepository() private rescheduleRepository: RescheduleRepository,
-    @InjectRepository() private routineRepository: RoutineRepository,
+    @InjectRepository() private planRepository: PlanRepository,
     @InjectRepository() private planOrderRepository: PlanOrderRepository,
   ) {}
 
