@@ -62,11 +62,11 @@ export class DailyPlanController {
   }
 
   @HttpCode(200)
-  @Patch('/:userId')
+  @Patch('/:userId/:planId')
   @UseBefore(errorValidator)
   @OpenAPI({
     summary: '계획 블록 수정',
-    description: '일간 계획, 우회할 계획, 루틴로드 계획블록 이름을 수정',
+    description: '일간 계획, 우회할 계획, 루틴로드 계획블록 수정',
     statusCode: '200',
   })
   public async updatePlans(
@@ -76,12 +76,10 @@ export class DailyPlanController {
     @Param('planId') planId: string,
     @BodyParam('planName') planName: string,
     @BodyParam('colorChip') colorChip: string,
-    @QueryParams() type: string,
   ) {
     try {
       await this.dailyPlanService.updatePlans(
         +userId,
-        type,
         +planId,
         planName,
         colorChip,
