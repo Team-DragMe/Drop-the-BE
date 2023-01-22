@@ -8,6 +8,8 @@ const message = {
 
   //계획 블록
   READ_PLAN_SUCCESS: '계획블록 조회 성공',
+  DELETE_PLAN_SUCCESS: '계획블록 삭제 성공',
+  DELETE_PLAN_FAIL: '계획블록 삭제 실패',
 };
 
 export default message;
