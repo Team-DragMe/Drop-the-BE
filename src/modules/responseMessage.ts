@@ -8,6 +8,9 @@ const message = {
 
   //계획 블록
   READ_PLAN_SUCCESS: '계획블록 조회 성공',
+
+  //Daily Note
+  READ_DAILYNOTE_SUCCESS: '데일리노트 조회 성공',
 };
 
 export default message;
