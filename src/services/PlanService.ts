@@ -65,8 +65,7 @@ export class PlanService {
     colorChip: string,
   ) {
     try {
-      //* 계획 이름만 수정하는 경우
-      if (planName && !colorChip) {
+      if (planName) {
         await this.planRepository.update(
           {
             id: planId,
@@ -79,8 +78,7 @@ export class PlanService {
           },
         );
       }
-      //* 컬러칩만 수정하는 경우
-      if (!planName && colorChip) {
+      if (colorChip) {
         await this.planRepository.update(
           {
             id: planId,
@@ -89,21 +87,6 @@ export class PlanService {
             },
           },
           {
-            colorchip: colorChip,
-          },
-        );
-      }
-      //* 계획 이름, 컬러칩 모두 수정하는 경우
-      if (planName && colorChip) {
-        await this.planRepository.update(
-          {
-            id: planId,
-            user: {
-              id: userId,
-            },
-          },
-          {
-            planName: planName,
             colorchip: colorChip,
           },
         );
