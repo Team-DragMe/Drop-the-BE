@@ -1,16 +1,12 @@
 import { PlanOrderRepository } from './../repositories/PlanOrderRepository';
 import { Service } from 'typedi';
 import { InjectRepository } from 'typeorm-typedi-extensions';
-import { DailyPlanRepository } from '../repositories/DailyPlanRepository';
-import { RescheduleRepository } from './../repositories/RescheduleRepository';
-import { RoutineRepository } from './../repositories/RoutineRepository';
+import { PlanRepository } from '../repositories/PlanRepository';
 
 @Service()
 export class DailyPlanService {
   constructor(
-    @InjectRepository() private dailyPlanRepository: DailyPlanRepository,
-    @InjectRepository() private rescheduleRepository: RescheduleRepository,
-    @InjectRepository() private routineRepository: RoutineRepository,
+    @InjectRepository() private planRepository: PlanRepository,
     @InjectRepository() private planOrderRepository: PlanOrderRepository,
   ) {}
 
@@ -32,17 +28,15 @@ export class DailyPlanService {
 
       switch (type) {
         case 'daily': {
-          const plans = await this.dailyPlanRepository.findByIds(totalPlanList);
+          const plans = await this.planRepository.findByIds(totalPlanList);
           return plans;
         }
         case 'reschedule': {
-          const plans = await this.rescheduleRepository.findByIds(
-            totalPlanList,
-          );
+          const plans = await this.planRepository.findByIds(totalPlanList);
           return plans;
         }
         case 'routine': {
-          const plans = await this.routineRepository.findByIds(totalPlanList);
+          const plans = await this.planRepository.findByIds(totalPlanList);
           return plans;
         }
       }

@@ -1,8 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { DailyPlan } from './DailyPlan';
+import { Plan } from './Plan';
 import { DailyNote } from './DailyNote';
-import { Reschedule } from './Reschedule';
-import { RoutineRoad } from './RoutineRoad';
 
 @Entity({ name: 'users' })
 export class User {
@@ -19,6 +17,9 @@ export class User {
   @Column({ length: 10, nullable: false })
   nick?: string;
 
+  @Column({ length: 35 })
+  goal?: string;
+
   // 로그인한 플랫폼. ex) google
   @Column({ nullable: false })
   provider!: string;
@@ -26,15 +27,9 @@ export class User {
   @Column({ name: 'refresh_token', nullable: true })
   refreshToken?: string;
 
-  @OneToMany(() => DailyPlan, (dailyplans) => dailyplans.user)
-  dailyplans?: DailyPlan[];
+  @OneToMany(() => Plan, (plan) => plan.user)
+  dailyplans?: Plan[];
 
   @OneToMany(() => DailyNote, (dailynotes) => dailynotes.user)
-  dailynotes?: DailyPlan[];
-
-  @OneToMany(() => Reschedule, (reschedules) => reschedules.user)
-  reschedules?: Reschedule[];
-
-  @OneToMany(() => RoutineRoad, (routineroads) => routineroads.user)
-  routineroads?: Reschedule[];
+  dailynotes?: Plan[];
 }
