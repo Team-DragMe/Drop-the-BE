@@ -139,14 +139,16 @@ export class DailyPlanService {
               planDate: date,
             },
           });
-          if (!existPlanOrder) {
+          if (existPlanOrder.length == 0) {
             //* planOrder가 없다면 그 날의 routine planOrder 생성
+            const routinePlanOrder = this.planOrderRepository.create({
+              user_id: userId,
+              type: type,
+              planDate: date,
+              planList: [],
+            });
             existPlanOrder = [
-              this.planOrderRepository.create({
-                user_id: userId,
-                type: type,
-                planDate: date,
-              }),
+              await this.planOrderRepository.save(routinePlanOrder),
             ];
           }
 
@@ -159,11 +161,11 @@ export class DailyPlanService {
             },
             colorchip: 'white',
           });
-          const createPlan = await this.planRepository.save(planData);
+          const routinePlan = await this.planRepository.save(planData);
 
           //* planOrder에 planId 저장
           let planList = existPlanOrder.pop()?.planList as number[];
-          planList.push(createPlan.id);
+          planList.push(routinePlan.id);
 
           //* planOrder를 DB에 업데이트
           await this.planOrderRepository.update(
@@ -177,14 +179,14 @@ export class DailyPlanService {
             },
           );
           const data = {
-            id: createPlan.id,
-            planDate: dayjs(createPlan.planDate).format('YYYY-MM-DD'),
-            planName: createPlan.planName,
-            colorchip: createPlan.colorchip,
-            planTime: createPlan.planTime,
-            fulfilTime: createPlan.fulfillTime,
+            id: routinePlan.id,
+            planDate: dayjs(routinePlan.planDate).format('YYYY-MM-DD'),
+            planName: routinePlan.planName,
+            colorchip: routinePlan.colorchip,
+            planTime: routinePlan.planTime,
+            fulfilTime: routinePlan.fulfillTime,
             type: type,
-            createdAt: createPlan.createdAt,
+            createdAt: routinePlan.createdAt,
           };
           return data;
         }
