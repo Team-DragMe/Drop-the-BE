@@ -63,6 +63,7 @@ export class PlanService {
     planId: number,
     planName: string,
     colorChip: string,
+    date: string,
   ) {
     try {
       if (planName) {
@@ -91,7 +92,69 @@ export class PlanService {
           },
         );
       }
-      return null;
+      //* 우회 취소
+      if (date) {
+        //* 우회할 계획에서 계획블록 섹션으로 옮길 id 찾기
+        const reschedulePlan = await this.planOrderRepository.find({
+          where: {
+            user_id: userId,
+            type: 'reschedule',
+            planDate: date,
+          },
+        });
+
+        if (reschedulePlan.length == 0) {
+          return null;
+        }
+        let planList = reschedulePlan.pop()?.planList as number[];
+
+        //* planList에 planId에 맞는 계획이 없을 경우 에러처리
+        const checkPlanList = planList.includes(planId);
+
+        if (!checkPlanList) {
+          return null;
+        }
+        //* 우회할 planList에서 planId 제거
+        const reschedulePlanList = planList.filter((plan) => plan !== planId);
+
+        await this.planOrderRepository.update(
+          {
+            user_id: userId,
+            type: 'reschedule',
+            planDate: date,
+          },
+          {
+            planList: reschedulePlanList,
+          },
+        );
+
+        //* 계획 블록 planList 찾아내기
+        const dailyPlan = await this.planOrderRepository.find({
+          where: {
+            user_id: userId,
+            type: 'daily',
+            planDate: date,
+          },
+        });
+
+        if (dailyPlan.length == 0) {
+          return null;
+        }
+        let dailyPlanList = dailyPlan.pop()?.planList as number[];
+        //* 계획 블록 섹션에 추가
+        dailyPlanList.push(planId);
+
+        await this.planOrderRepository.update(
+          {
+            user_id: userId,
+            type: 'daily',
+            planDate: date,
+          },
+          {
+            planList: dailyPlanList,
+          },
+        );
+      }
     } catch (error) {
       console.log(error);
     }

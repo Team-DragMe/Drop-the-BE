@@ -76,6 +76,8 @@ export class DailyPlanController {
     @Param('planId') planId: string,
     @BodyParam('planName') planName: string,
     @BodyParam('colorChip') colorChip: string,
+    @BodyParam('type') type: string,
+    @BodyParam('date') date: string,
   ) {
     try {
       const data = await this.planService.updatePlans(
@@ -83,8 +85,9 @@ export class DailyPlanController {
         +planId,
         planName,
         colorChip,
+        date,
       );
-      if (!data) {
+      if (data === null) {
         return res
           .status(statusCode.BAD_REQUEST)
           .send(fail(statusCode.BAD_REQUEST, message.UPDATE_PLAN_FAIL));
