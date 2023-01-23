@@ -8,6 +8,7 @@ const message = {
 
   //계획 블록
   READ_PLAN_SUCCESS: '계획블록 조회 성공',
+  CREATE_PLAN_SUCCESS: '계획블록 생성 성공',
 };
 
 export default message;
