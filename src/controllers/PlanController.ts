@@ -10,6 +10,9 @@ import {
   QueryParams,
   UseBefore,
   UseAfter,
+  BodyParam,
+  Body,
+  Post,
 } from 'routing-controllers';
 import errorValidator from '../middleware/errorValidator';
 import { IsString } from 'class-validator';
@@ -19,6 +22,7 @@ import { Request, Response } from 'express';
 import statusCode from '../modules/statusCode';
 import message from '../modules/responseMessage';
 import { success, fail } from '../modules/util';
+import dayjs from 'dayjs';
 
 class GetTypeAndDateQuery {
   @IsString()
@@ -52,6 +56,46 @@ export class DailyPlanController {
       return res
         .status(statusCode.OK)
         .send(success(statusCode.OK, message.READ_PLAN_SUCCESS, data));
+    } catch (error) {
+      console.log(error);
+      return res
+        .status(statusCode.INTERNAL_SERVER_ERROR)
+        .send(
+          fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR),
+        );
+    }
+  }
+
+  @HttpCode(200)
+  @Post('/:userId')
+  @OpenAPI({
+    summary: '계획 블록 조회',
+    description: '일간 계획, 우회할 계획, 루틴로드 조회',
+    statusCode: '200',
+  })
+  public async createPlan(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Param('userId') userId: string,
+    @BodyParam('planName') planName: string,
+    @BodyParam('date') date: string,
+    @BodyParam('type') type: string,
+  ) {
+    if (!planName || !date || !type) {
+      return res
+        .status(statusCode.BAD_REQUEST)
+        .send(fail(statusCode.BAD_REQUEST, message.BAD_REQUEST));
+    }
+    try {
+      const data = await this.dailyPlanService.createPlan(
+        +userId,
+        planName,
+        dayjs(date, 'YYYY-MM-DD').toDate(),
+        type,
+      );
+      return res
+        .status(statusCode.CREATED)
+        .send(success(statusCode.CREATED, message.CREATE_PLAN_SUCCESS, data));
     } catch (error) {
       console.log(error);
       return res
