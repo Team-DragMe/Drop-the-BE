@@ -1,5 +1,5 @@
 export interface SocialUser {
-  userId: number;
+  userId: string;
   name: string;
   email: string;
 }

@@ -1,11 +1,10 @@
 import { IsNotEmpty, Length, IsEmail, IsString } from 'class-validator';
-import { User } from '../entities/User';
 
 /**
  * 유저 생성 DTO
  */
 export class CreateUserDto {
-  constructor(snsId: number, nick: string, email: string, provider: string) {
+  constructor(snsId: string, nick: string, email: string, provider: string) {
     this.snsId = snsId;
     this.email = email;
     this.nick = nick;
@@ -13,7 +12,7 @@ export class CreateUserDto {
   }
 
   @IsNotEmpty()
-  public snsId: number;
+  public snsId: string;
 
   @IsNotEmpty()
   @Length(1, 50)
@@ -28,28 +27,3 @@ export class CreateUserDto {
   @IsString()
   public provider: string;
 }
-
-// export class ResponseUserDto {
-//   public accessToken: string;
-
-//   public refreshToken: string;
-
-//   public isSignup: boolean;
-// }
-
-// export class UserDto {
-//   public id: number;
-//   public snsId: string;
-//   public nick: string;
-//   public provider: string;
-//   public email: string;
-//   public refreshToken: string;
-
-//   constructor(user: User) {
-//     this.id = user.id;
-//     this.snsId = user.snsId;
-//     this.nick = user.nick;
-//     this.provider = user.provider;
-//     this.email = user.email;
-//   }
-// }

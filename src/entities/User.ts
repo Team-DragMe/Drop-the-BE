@@ -8,7 +8,7 @@ export class User {
   id!: number;
 
   @Column({ name: 'sns_id', nullable: false })
-  snsId!: number;
+  snsId!: string;
 
   @Column({ nullable: false })
   email!: string;
@@ -17,7 +17,7 @@ export class User {
   @Column({ length: 10, nullable: false })
   nick?: string;
 
-  @Column({ length: 35 })
+  @Column({ length: 35, nullable: true })
   goal?: string;
 
   // 로그인한 플랫폼. ex) google
