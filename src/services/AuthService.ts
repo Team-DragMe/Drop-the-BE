@@ -15,7 +15,7 @@ export class AuthService {
       //*사용자 정보 받기
 
       const user = await axios({
-        method: 'post',
+        method: 'get',
         url: `https://www.googleapis.com/oauth2/v2/userinfo?access_token=${googleAccessToken}`,
         headers: {
           authorization: `Bearer ${googleAccessToken}`,
@@ -23,7 +23,7 @@ export class AuthService {
       });
       const userId = user.data.id;
       if (!userId) return exceptionMessage.INVALID_USER;
-      const name = user.data.profile.name;
+      const name = user.data.name;
       const email = user.data.email;
       const googleUser: SocialUser = {
         userId: userId,
@@ -79,7 +79,6 @@ export class AuthService {
           refreshToken: refreshToken,
         },
       });
-
       if (!user) {
         return null;
       }

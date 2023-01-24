@@ -1,18 +1,17 @@
 import {
+  BodyParam,
   Get,
   HttpCode,
   JsonController,
   Post,
   Req,
   Res,
-  UseBefore,
 } from 'routing-controllers';
 import { CreateUserDto } from './../dtos/UserDto';
 import { createRefresh, sign, verify } from './../modules/jwtHandler';
 import { SocialUser } from '../dtos/SocialUser';
 import { Request, Response } from 'express';
 import { OpenAPI } from 'routing-controllers-openapi';
-import errorValidator from '../middleware/errorValidator';
 import exceptionMessage from '../modules/exceptionMessage';
 import message from '../modules/responseMessage';
 import statusCode from '../modules/statusCode';
@@ -29,15 +28,17 @@ export class AuthController {
 
   @HttpCode(200)
   @Post('/')
-  @UseBefore(errorValidator)
   @OpenAPI({
     summary: '소셜 로그인 및 회원가입',
     description: '소셜 로그인 및 유저를 등록합니다.',
     statusCode: '200',
   })
-  public async auth(@Req() req: Request, @Res() res: Response) {
-    const { token, provider } = req.body;
-
+  public async auth(
+    @Req() req: Request,
+    @Res() res: Response,
+    @BodyParam('token') token: string,
+    @BodyParam('provider') provider: string,
+  ) {
     try {
       //* 구글 사용자 정보 가져오기
       const user = await this.authService.getSocialUser(token);
@@ -63,7 +64,6 @@ export class AuthController {
       const existUser = await this.userService.findUserById(
         createUserDto.snsId,
       );
-
       if (!existUser) {
         //* 가입되지 않은 유저일 경우 회원가입
         const refreshToken = createRefresh();
@@ -121,7 +121,7 @@ export class AuthController {
     statusCode: '200',
   })
   public async getToken(@Req() req: Request, @Res() res: Response) {
-    const refreshToken = req.headers.refreshToken;
+    const refreshToken = req.headers.refreshtoken;
 
     //* 토큰이 없다면
     if (!refreshToken)
@@ -131,7 +131,6 @@ export class AuthController {
 
     try {
       const refresh = verify(refreshToken as string);
-
       //* 만료된 refreshToken
       if (refresh == exceptionMessage.TOKEN_EXPIRED) {
         return res
