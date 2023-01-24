@@ -7,13 +7,15 @@ export class PlanOrder {
   id!: number;
 
   @ManyToOne(() => User, (user) => user.dailyplans)
-  user?: User;
+  user!: User;
+  @Column()
+  user_id!: number;
 
   @Column({ name: 'type' })
   type?: string;
 
   @Column({ name: 'plan_date', nullable: false })
-  planDate?: Date;
+  planDate?: string;
 
   @Column('int', { name: 'plan_list', array: true })
   planList?: number[];
