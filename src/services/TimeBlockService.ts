@@ -28,6 +28,21 @@ export class TimeBlockService {
     }
   }
 
+  public async setTimeBlock(
+    planId: number,
+    isPlan: boolean,
+    timeList: number[],
+  ) {
+    try {
+      await this.planRepository.update(
+        planId,
+        isPlan ? { planTime: timeList } : { fulfillTime: timeList },
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   private planToDto(plans: Plan[]): TimeBlockDto[] {
     const timeBlockList = plans.map((plan) => {
       const timeBlock = new TimeBlockDto();

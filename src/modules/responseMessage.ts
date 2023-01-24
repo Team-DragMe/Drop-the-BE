@@ -9,7 +9,9 @@ const message = {
   //계획 블록
   READ_PLAN_SUCCESS: '계획블록 조회 성공',
 
+  //타임 블록
   FETCH_TIMEBLOCK_SUCCESS: '타임블록 조회 성공',
+  UPDATE_TIMEBLOCK_SUCCESS: '타임블록 업데이트 성공',
 };
 
 export default message;
