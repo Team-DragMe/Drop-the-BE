@@ -8,19 +8,25 @@ export class DailyNoteService {
     @InjectRepository() private dailyNoteRepository: DailyNoteRepository,
   ) {}
 
-  public async getDailyNote(userId: number, createdAt: string) {
+  public async getDailyNote(userId: number, planDate: string) {
     try {
       const userDailyNote = await this.dailyNoteRepository.find({
         where: {
-          user_id: userId,
-          createdAt,
+          user: {
+            id: userId,
+          },
+          planDate,
         },
       });
+      console.log(userDailyNote);
 
       if (!userDailyNote) {
-        return null; // (확인해보기)널 말고 메시지 바로 보내주는게 클라가 편하려나?
+        return null;
+      } else {
+        return userDailyNote;
       }
     } catch (error) {
+      console.log(error);
       throw error;
     }
   }

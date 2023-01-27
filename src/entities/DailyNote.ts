@@ -12,8 +12,8 @@ export class DailyNote {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @CreateDateColumn({ type: 'timestamp', name: 'created_at', nullable: false })
-  createdAt?: Date;
+  @Column({ name: 'plan_date', nullable: false })
+  planDate?: string;
 
   @Column()
   emoji?: string;

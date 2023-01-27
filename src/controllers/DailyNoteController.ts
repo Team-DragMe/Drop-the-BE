@@ -7,18 +7,12 @@ import {
   Param,
   QueryParams,
 } from 'routing-controllers';
-import { IsString } from 'class-validator';
 import { OpenAPI } from 'routing-controllers-openapi';
 import { Request, Response } from 'express';
 import statusCode from '../modules/statusCode';
 import message from '../modules/responseMessage';
 import { success, fail } from '../modules/util';
 import { DailyNoteService } from '../services/DailyNoteService';
-
-class GetTypeAndDateQuery {
-  @IsString()
-  createdAt!: string;
-}
 
 @JsonController('/dailynote')
 export class DailyNoteController {
@@ -36,13 +30,11 @@ export class DailyNoteController {
     @Req() req: Request,
     @Res() res: Response,
     @Param('userId') userId: string,
-    @QueryParams() query: GetTypeAndDateQuery,
+    @QueryParams() planDate: string,
   ) {
     try {
-      const data = await this.dailyNoteService.getDailyNote(
-        +userId,
-        query.createdAt,
-      );
+      const data = await this.dailyNoteService.getDailyNote(+userId, planDate);
+      console.log(data);
       return res
         .status(statusCode.OK)
         .send(success(statusCode.OK, message.READ_DAILYNOTE_SUCCESS, data));
