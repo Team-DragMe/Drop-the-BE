@@ -5,7 +5,6 @@ import { SocialUser } from '../dtos/SocialUser';
 import exceptionMessage from '../modules/exceptionMessage';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { User } from '../entities/User';
-import { getConnection } from 'typeorm';
 
 @Service()
 export class AuthService {
@@ -49,9 +48,6 @@ export class AuthService {
   }
 
   public async saveRefreshToken(user: User, refreshToken: string) {
-    const queryRunner = getConnection().createQueryRunner();
-    await queryRunner.startTransaction();
-
     try {
       user.refreshToken = refreshToken;
       await this.userRepository.update(
@@ -62,13 +58,9 @@ export class AuthService {
           refreshToken: user.refreshToken,
         },
       );
-
-      await queryRunner.commitTransaction();
     } catch (error) {
       console.log(error);
-      await queryRunner.rollbackTransaction();
-    } finally {
-      await queryRunner.release();
+      throw error;
     }
   }
 
@@ -85,6 +77,7 @@ export class AuthService {
       return user;
     } catch (error) {
       console.log(error);
+      throw error;
     }
   }
 }
