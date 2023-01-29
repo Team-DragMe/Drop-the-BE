@@ -43,12 +43,7 @@ export class AuthController {
       //* 구글 사용자 정보 가져오기
       const user = await this.authService.getSocialUser(token);
 
-      //* user가 없다면
-      if (!user) {
-        return res
-          .status(statusCode.UNAUTHORIZED)
-          .send(fail(statusCode.UNAUTHORIZED, message.INVALID_TOKEN));
-      }
+      //* 구글 user가 없다면
       if (user == exceptionMessage.INVALID_USER) {
         return res
           .status(statusCode.UNAUTHORIZED)
