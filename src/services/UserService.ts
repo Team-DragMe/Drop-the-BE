@@ -30,7 +30,7 @@ export class UserService {
         provider: createUserDto.provider,
         snsId: createUserDto.snsId,
       });
-      const newUser = await this.userRepository.insert(createUser);
+      const newUser = await this.userRepository.save(createUser);
       return newUser;
     } catch (error) {
       throw error;
