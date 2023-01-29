@@ -10,6 +10,8 @@ import {
   QueryParams,
   UseBefore,
   UseAfter,
+  Body,
+  Patch,
 } from 'routing-controllers';
 import errorValidator from '../middleware/errorValidator';
 import { IsString } from 'class-validator';
@@ -52,6 +54,48 @@ export class DailyPlanController {
       return res
         .status(statusCode.OK)
         .send(success(statusCode.OK, message.READ_PLAN_SUCCESS, data));
+    } catch (error) {
+      console.log(error);
+      return res
+        .status(statusCode.INTERNAL_SERVER_ERROR)
+        .send(
+          fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR),
+        );
+    }
+  }
+
+  @HttpCode(200)
+  @Patch('/:userId')
+  @OpenAPI({
+    summary: '계획 블록 순서 이동 및 변경',
+    description: '계획 블록 순서 이동 및 변경합니다.',
+    statusCode: '200',
+  })
+  public async moveAndChangePlanOrder(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Param('userId') userId: string,
+    @QueryParams() planDate: string,
+    @Body()
+    body: {
+      to: string;
+      from: string;
+      planId: number;
+      lastArray: number[];
+    },
+  ) {
+    try {
+      const data = await this.dailyPlanService.moveAndChangePlanOrder(
+        +userId,
+        body.to,
+        body.from,
+        body.planId,
+        body.lastArray,
+        planDate,
+      );
+      return res
+        .status(statusCode.OK)
+        .send(success(statusCode.OK, message.MOVE_PLAN_ORDER_SUCCESS));
     } catch (error) {
       console.log(error);
       return res

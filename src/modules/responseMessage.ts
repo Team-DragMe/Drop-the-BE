@@ -8,6 +8,7 @@ const message = {
 
   //계획 블록
   READ_PLAN_SUCCESS: '계획블록 조회 성공',
+  MOVE_PLAN_ORDER_SUCCESS: '계획블록 순서 이동 및 변경 성공',
 };
 
 export default message;
