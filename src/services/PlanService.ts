@@ -65,6 +65,7 @@ export class DailyPlanService {
             planDate,
           },
         });
+
         changePlanList = findPlanList.pop()?.planList as number[];
         changePlanList = lastArray;
 
@@ -91,7 +92,6 @@ export class DailyPlanService {
             id: planId,
           },
         });
-
         if (!findPlanInfo) {
           return null;
         }
@@ -101,7 +101,7 @@ export class DailyPlanService {
           planName: findPlanInfo.planName,
           colorchip: findPlanInfo.colorchip,
           user: {
-            id: findPlanInfo.user?.id,
+            id: userId,
           },
           planDate: findPlanInfo.planDate,
         });
@@ -109,11 +109,7 @@ export class DailyPlanService {
 
         //* 최종 배열 수정
         const findPlanIdIndex = lastArray.indexOf(planId);
-        const updatePlanList = lastArray.splice(
-          findPlanIdIndex,
-          1,
-          duplicatePlan.id,
-        );
+        lastArray.splice(findPlanIdIndex, 1, 34);
 
         //* planList에 최종 배열 업데이트
         await this.planOrderRepository.update(
@@ -123,7 +119,7 @@ export class DailyPlanService {
             planDate,
           },
           {
-            planList: updatePlanList,
+            planList: lastArray,
           },
         );
       }
@@ -133,8 +129,20 @@ export class DailyPlanService {
         (to == 'daily' && from == 'reschedule') ||
         (to == 'reschedule' && from == 'daily')
       ) {
+        if (to == 'reschedule' && from == 'daily')
+          //* 우회할 계획으로 이동하는 계획블록 시간 데이터 삭제
+          await this.planRepository.update(
+            {
+              id: planId,
+            },
+            {
+              planTime: [],
+              fulfillTime: [],
+            },
+          );
+
         let deletePlanList;
-        //* 순서 이동 전 planList에서 planId 삭제
+        //* 순서 이동 전 planList에서 planId 삭제 후 업데이트
         const findPlanList = await this.planOrderRepository.find({
           where: {
             user_id: userId,
@@ -143,7 +151,18 @@ export class DailyPlanService {
           },
         });
         deletePlanList = findPlanList.pop()?.planList as number[];
-        deletePlanList.filter((plan) => plan !== planId);
+        deletePlanList = deletePlanList.filter((plan) => plan != planId);
+
+        await this.planOrderRepository.update(
+          {
+            user_id: userId,
+            type: from,
+            planDate,
+          },
+          {
+            planList: deletePlanList,
+          },
+        );
 
         //* 순서 이동 후 planList에 최종 배열 업데이트
         await this.planOrderRepository.update(

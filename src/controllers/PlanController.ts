@@ -12,6 +12,7 @@ import {
   UseAfter,
   Body,
   Patch,
+  QueryParam,
 } from 'routing-controllers';
 import errorValidator from '../middleware/errorValidator';
 import { IsString } from 'class-validator';
@@ -75,7 +76,7 @@ export class DailyPlanController {
     @Req() req: Request,
     @Res() res: Response,
     @Param('userId') userId: string,
-    @QueryParams() planDate: string,
+    @QueryParam('planDate') planDate: string,
     @Body()
     body: {
       to: string;
