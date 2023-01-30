@@ -109,7 +109,7 @@ export class DailyPlanService {
 
         //* 최종 배열 수정
         const findPlanIdIndex = lastArray.indexOf(planId);
-        lastArray.splice(findPlanIdIndex, 1, 34);
+        lastArray.splice(findPlanIdIndex, 1, duplicatePlan.id);
 
         //* planList에 최종 배열 업데이트
         await this.planOrderRepository.update(
