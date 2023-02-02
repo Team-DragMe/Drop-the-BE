@@ -1,42 +1,48 @@
-import express, { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { env } from '../config';
+import { Request, Response, NextFunction } from 'express';
+import { JwtPayload } from 'jsonwebtoken';
 import statusCode from '../modules/statusCode';
 import message from '../modules/responseMessage';
-import util from '../modules/util';
+import { fail } from '../modules/util';
+import { verify } from '../modules/jwtHandler';
+import exceptionMessage from '../modules/exceptionMessage';
 
 export default (req: Request, res: Response, next: NextFunction) => {
-  // request-header 에서 토큰 받아오기
-  const token = req.headers['authorization']?.split(' ').reverse()[0];
-
-  // 토큰 유무 검증
-  if (!token) {
+  const token = req.headers.authorization;
+  if (!token)
     return res
       .status(statusCode.UNAUTHORIZED)
-      .send(util.fail(statusCode.UNAUTHORIZED, message.NULL_VALUE_TOKEN));
-  }
-  // 토큰 검증
+      .send(fail(statusCode.UNAUTHORIZED, message.EMPTY_TOKEN));
+
   try {
-    const decoded = jwt.verify(token, env.jwt.jwtSecret);
+    const decoded = verify(token as string); //? jwtHandler에서 만들어둔 verify로 토큰 검사
 
-    req.body.user = (decoded as any).user;
-
-    next(); // 미들웨어 실행 끝나면 다음으로 넘어감
-  } catch (error: any) {
-    console.log(error);
-    if (error.name === 'TokenExpiredError') {
-      //원래 error.name인데 속성 에러남
+    //? 토큰 에러 분기 처리
+    if (decoded === exceptionMessage.TOKEN_EXPIRED)
       return res
         .status(statusCode.UNAUTHORIZED)
-        .send(util.fail(statusCode.UNAUTHORIZED, message.INVALID_TOKEN));
-    }
+        .send(fail(statusCode.UNAUTHORIZED, message.NULL_VALUE_TOKEN));
+    if (decoded === exceptionMessage.TOKEN_INVALID)
+      return res
+        .status(statusCode.UNAUTHORIZED)
+        .send(fail(statusCode.UNAUTHORIZED, message.INVALID_TOKEN));
+
+    //? decode한 후 담겨있는 userId를 꺼내옴
+    const userId = (decoded as JwtPayload).id;
+    if (!userId)
+      return res
+        .status(statusCode.UNAUTHORIZED)
+        .send(fail(statusCode.UNAUTHORIZED, message.INVALID_TOKEN));
+
+    //? 얻어낸 userId 를 Request Body 내 userId 필드에 담고, 다음 미들웨어로 넘김( next() )
+    req.body.userId = userId;
+    next();
+  } catch (error) {
+    console.log(error);
     res
       .status(statusCode.INTERNAL_SERVER_ERROR)
       .send(
-        util.fail(
-          statusCode.INTERNAL_SERVER_ERROR,
-          message.INTERNAL_SERVER_ERROR,
-        ),
+        fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR),
       );
   }
+  next();
 };
