@@ -18,7 +18,7 @@ export const sign = (userId: number) => {
 
 //* refresh 토큰 생성
 export const createRefresh = () => {
-  const refreshToken = jwt.sign({}, env.jwt.jwtSecret, { expiresIn: '14d' });
+  const refreshToken = jwt.sign({}, env.jwt.jwtSecret, { expiresIn: '30d' });
   return refreshToken;
 };
 
