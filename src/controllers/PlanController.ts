@@ -11,11 +11,13 @@ import {
   Body,
   Post,
   Delete,
+  QueryParam,
 } from 'routing-controllers';
 import {
   deletePlanValidation,
   errorValidator,
   getPlanValidation,
+  movePlanValidation,
 } from '../middleware/errorValidator';
 import { IsString } from 'class-validator';
 import { PlanService } from '../services/PlanService';
@@ -192,6 +194,54 @@ export class DailyPlanController {
       return res
         .status(statusCode.OK)
         .send(success(statusCode.OK, message.DELETE_PLAN_SUCCESS));
+    } catch (error) {
+      console.log(error);
+      return res
+        .status(statusCode.INTERNAL_SERVER_ERROR)
+        .send(
+          fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR),
+        );
+    }
+  }
+
+  @HttpCode(200)
+  @Patch('/')
+  @UseBefore(...movePlanValidation, errorValidator, auth)
+  @OpenAPI({
+    summary: '계획 블록 순서 이동 및 변경',
+    description: '계획 블록 순서 이동 및 변경합니다.',
+    statusCode: '200',
+  })
+  public async moveAndChangePlanOrder(
+    @Req() req: Request,
+    @Res() res: Response,
+    @QueryParam('planDate') planDate: string,
+    @Body()
+    body: {
+      to: string;
+      from: string;
+      planId: number;
+      lastArray: number[];
+    },
+  ) {
+    if (!body.to || !body.from || !body.lastArray) {
+      return res
+        .status(statusCode.BAD_REQUEST)
+        .send(fail(statusCode.BAD_REQUEST, message.BAD_REQUEST));
+    }
+    try {
+      const userId = res.locals.JwtPayload;
+      await this.planService.moveAndChangePlanOrder(
+        +userId,
+        body.to,
+        body.from,
+        body.planId,
+        body.lastArray,
+        planDate,
+      );
+      return res
+        .status(statusCode.OK)
+        .send(success(statusCode.OK, message.MOVE_PLAN_ORDER_SUCCESS));
     } catch (error) {
       console.log(error);
       return res

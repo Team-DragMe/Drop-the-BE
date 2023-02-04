@@ -22,6 +22,7 @@ const message = {
   CREATE_PLAN_SUCCESS: '계획블록 생성 성공',
   DELETE_PLAN_SUCCESS: '계획블록 삭제 성공',
   DELETE_PLAN_FAIL: '계획블록 삭제 실패',
+  MOVE_PLAN_ORDER_SUCCESS: '계획블록 순서 이동 및 변경 성공',
 };
 
 export default message;
