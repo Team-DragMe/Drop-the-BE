@@ -12,7 +12,7 @@ export class DailyNote {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ name: 'plan_date', nullable: false })
+  @Column({ name: 'plan_date', nullable: true })
   planDate?: string;
 
   @Column()
