@@ -17,6 +17,7 @@ import {
   deletePlanValidation,
   errorValidator,
   getPlanValidation,
+  movePlanValidation,
 } from '../middleware/errorValidator';
 import { IsString } from 'class-validator';
 import { PlanService } from '../services/PlanService';
@@ -204,7 +205,8 @@ export class DailyPlanController {
   }
 
   @HttpCode(200)
-  @Patch('/:userId')
+  @Patch('/')
+  @UseBefore(...movePlanValidation, errorValidator, auth)
   @OpenAPI({
     summary: '계획 블록 순서 이동 및 변경',
     description: '계획 블록 순서 이동 및 변경합니다.',
@@ -213,7 +215,6 @@ export class DailyPlanController {
   public async moveAndChangePlanOrder(
     @Req() req: Request,
     @Res() res: Response,
-    @Param('userId') userId: string,
     @QueryParam('planDate') planDate: string,
     @Body()
     body: {
@@ -223,8 +224,14 @@ export class DailyPlanController {
       lastArray: number[];
     },
   ) {
+    if (!body.to || !body.from || !body.lastArray) {
+      return res
+        .status(statusCode.BAD_REQUEST)
+        .send(fail(statusCode.BAD_REQUEST, message.BAD_REQUEST));
+    }
     try {
-      const data = await this.dailyPlanService.moveAndChangePlanOrder(
+      const userId = res.locals.JwtPayload;
+      await this.planService.moveAndChangePlanOrder(
         +userId,
         body.to,
         body.from,
