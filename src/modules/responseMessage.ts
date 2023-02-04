@@ -14,6 +14,7 @@ const message = {
   SIGNIN_SUCCESS: '로그인 성공',
   NO_USER: '존재하지 않는 유저입니다.',
   CREATE_USER_FAIL: '유저 생성 실패',
+  READ_PROFILE_SUCCESS: '마이페이지 조회 성공',
 
   //계획 블록
   READ_PLAN_SUCCESS: '계획블록 조회 성공',

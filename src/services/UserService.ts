@@ -36,4 +36,25 @@ export class UserService {
       throw error;
     }
   }
+
+  public async getProfileInfo(userId: number) {
+    try {
+      const profile = await this.userRepository.findOne({
+        where: {
+          id: userId,
+        },
+      });
+      if (!profile) {
+        return null;
+      }
+      const data = {
+        name: profile.nick,
+        email: profile.email,
+        goal: profile.goal,
+      };
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
