@@ -3,6 +3,7 @@ import { PlanOrderRepository } from './../repositories/PlanOrderRepository';
 import { Service } from 'typedi';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { PlanRepository } from '../repositories/PlanRepository';
+import { Like } from 'typeorm';
 
 @Service()
 export class PlanService {
@@ -612,6 +613,28 @@ export class PlanService {
         }
       }
     } catch (error) {
+      throw error;
+    }
+  }
+  public async getCalendarPlan(userId: number, month: string) {
+    try {
+      const findDateList = await this.planOrderRepository.find({
+        where: {
+          user_id: userId,
+          planDate: Like(`${month}%`),
+        },
+      });
+
+      // promise.all을 통해 전체 계획들의 날짜들을 형식에 맞는 number 배열로 변환
+      const data = await Promise.all(
+        findDateList.map((planDate: any) => {
+          let date = +planDate.planDate.substr(8, 2);
+          return date;
+        }),
+      );
+      return data;
+    } catch (error) {
+      console.log(error);
       throw error;
     }
   }

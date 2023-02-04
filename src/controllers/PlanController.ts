@@ -14,6 +14,7 @@ import {
   QueryParam,
 } from 'routing-controllers';
 import {
+  calendarValidation,
   deletePlanValidation,
   errorValidator,
   getPlanValidation,
@@ -242,6 +243,36 @@ export class DailyPlanController {
       return res
         .status(statusCode.OK)
         .send(success(statusCode.OK, message.MOVE_PLAN_ORDER_SUCCESS));
+    } catch (error) {
+      console.log(error);
+      return res
+        .status(statusCode.INTERNAL_SERVER_ERROR)
+        .send(
+          fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR),
+        );
+    }
+  }
+
+  @HttpCode(200)
+  @Get('/calendar')
+  @UseBefore(...calendarValidation, errorValidator, auth)
+  @OpenAPI({
+    summary: '계획 블록 조회',
+    description: '일간 계획, 우회할 계획, 루틴로드 조회',
+    statusCode: '200',
+  })
+  public async getCalendarPlan(
+    @Req() req: Request,
+    @Res() res: Response,
+    @QueryParam('month') month: string,
+  ) {
+    try {
+      const userId = res.locals.JwtPayload;
+      const data = await this.planService.getCalendarPlan(+userId, month);
+
+      return res
+        .status(statusCode.OK)
+        .send(success(statusCode.OK, message.READ_CALENDAR_PLAN_SUCCESS, data));
     } catch (error) {
       console.log(error);
       return res
