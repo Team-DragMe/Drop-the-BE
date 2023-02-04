@@ -26,6 +26,7 @@ const message = {
 
   //데일리 노트
   READ_DAILYNOTE_SUCCESS: '데일리노트 조회 성공',
+  CREATE_DAILYNOTE_SUCCESS: '데일리노트 작성 성공',
 };
 
 export default message;
