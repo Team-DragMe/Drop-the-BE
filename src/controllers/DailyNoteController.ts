@@ -4,8 +4,8 @@ import {
   JsonController,
   Res,
   Req,
-  Param,
-  QueryParams,
+  QueryParam,
+  UseBefore,
 } from 'routing-controllers';
 import { OpenAPI } from 'routing-controllers-openapi';
 import { Request, Response } from 'express';
@@ -13,13 +13,19 @@ import statusCode from '../modules/statusCode';
 import message from '../modules/responseMessage';
 import { success, fail } from '../modules/util';
 import { DailyNoteService } from '../services/DailyNoteService';
+import auth from '../middleware/auth';
+import {
+  dailyNoteValidation,
+  errorValidator,
+} from '../middleware/errorValidator';
 
 @JsonController('/dailynote')
 export class DailyNoteController {
   constructor(private dailyNoteService: DailyNoteService) {}
 
   @HttpCode(200)
-  @Get('/:userId')
+  @Get('/')
+  @UseBefore(...dailyNoteValidation, errorValidator, auth)
   @OpenAPI({
     summary: '데일리노트 조회',
     description:
@@ -29,12 +35,11 @@ export class DailyNoteController {
   public async getDailyNotes(
     @Req() req: Request,
     @Res() res: Response,
-    @Param('userId') userId: string,
-    @QueryParams() planDate: string,
+    @QueryParam('planDate') planDate: string,
   ) {
     try {
+      const userId = res.locals.JwtPayload;
       const data = await this.dailyNoteService.getDailyNote(+userId, planDate);
-      console.log(data);
       return res
         .status(statusCode.OK)
         .send(success(statusCode.OK, message.READ_DAILYNOTE_SUCCESS, data));
