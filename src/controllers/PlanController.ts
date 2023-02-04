@@ -13,6 +13,7 @@ import {
   Delete,
 } from 'routing-controllers';
 import {
+  deletePlanValidation,
   errorValidator,
   getPlanValidation,
 } from '../middleware/errorValidator';
@@ -162,7 +163,8 @@ export class DailyPlanController {
   }
 
   @HttpCode(200)
-  @Delete('/:userId/:planId')
+  @Delete('/:planId')
+  @UseBefore(...deletePlanValidation, errorValidator, auth)
   @OpenAPI({
     summary: '계획 블록 삭제',
     description: '일간 계획, 우회할 계획, 루틴로드 계획블록 삭제',
@@ -171,16 +173,16 @@ export class DailyPlanController {
   public async deletePlans(
     @Req() req: Request,
     @Res() res: Response,
-    @Param('userId') userId: string,
     @Param('planId') planId: string,
     @QueryParams() query: GetTypeAndDateQuery,
   ) {
     try {
-      const data = await this.dailyPlanService.deletePlans(
+      const userId = res.locals.JwtPayload;
+      const data = await this.planService.deletePlans(
         +userId,
         +planId,
         query.type,
-        query.date,
+        query.planDate,
       );
       if (!data) {
         return res
