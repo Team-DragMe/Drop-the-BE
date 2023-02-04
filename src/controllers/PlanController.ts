@@ -8,15 +8,12 @@ import {
   QueryParams,
   UseBefore,
   Patch,
-  UseAfter,
-  BodyParam,
   Body,
   Post,
 } from 'routing-controllers';
 import {
   errorValidator,
   getPlanValidation,
-  updatePlanValidation,
 } from '../middleware/errorValidator';
 import { IsString } from 'class-validator';
 import { PlanService } from '../services/PlanService';
@@ -26,7 +23,6 @@ import statusCode from '../modules/statusCode';
 import message from '../modules/responseMessage';
 import { success, fail } from '../modules/util';
 import auth from '../middleware/auth';
-import dayjs from 'dayjs';
 
 class GetTypeAndDateQuery {
   @IsString()
@@ -38,9 +34,9 @@ class GetTypeAndDateQuery {
 export class DailyPlanController {
   constructor(private planService: PlanService) {}
 
-  @UseBefore(...getPlanValidation, errorValidator, auth)
   @HttpCode(200)
   @Get('/')
+  @UseBefore(...getPlanValidation, errorValidator, auth)
   @OpenAPI({
     summary: '계획 블록 조회',
     description: '일간 계획, 우회할 계획, 루틴로드 조회',
@@ -72,9 +68,9 @@ export class DailyPlanController {
     }
   }
 
-  @UseBefore(...updatePlanValidation, errorValidator, auth)
   @HttpCode(200)
   @Patch('/:planId')
+  @UseBefore(auth)
   @OpenAPI({
     summary: '계획 블록 수정',
     description: '일간 계획, 우회할 계획, 루틴로드 계획블록 수정',
@@ -120,32 +116,36 @@ export class DailyPlanController {
     }
   }
 
-  @HttpCode(200)
-  @Post('/:userId')
+  @HttpCode(201)
+  @Post('/')
+  @UseBefore(auth)
   @OpenAPI({
-    summary: '계획 블록 조회',
-    description: '일간 계획, 우회할 계획, 루틴로드 조회',
-    statusCode: '200',
+    summary: '계획 블록 생성',
+    description: '일간 계획, 우회할 계획, 루틴로드 생성',
+    statusCode: '201',
   })
   public async createPlan(
     @Req() req: Request,
     @Res() res: Response,
-    @Param('userId') userId: string,
-    @BodyParam('planName') planName: string,
-    @BodyParam('date') date: string,
-    @BodyParam('type') type: string,
+    @Body()
+    body: {
+      planName: string;
+      planDate: string;
+      type: string;
+    },
   ) {
-    if (!planName || !date || !type) {
+    if (!body.planName || !body.planDate || !body.type) {
       return res
         .status(statusCode.BAD_REQUEST)
         .send(fail(statusCode.BAD_REQUEST, message.BAD_REQUEST));
     }
     try {
-      const data = await this.dailyPlanService.createPlan(
-        +userId,
-        planName,
-        dayjs(date, 'YYYY-MM-DD').toDate(),
-        type,
+      const userId = res.locals.JwtPayload;
+      const data = await this.planService.createPlan(
+        userId,
+        body.planName,
+        body.planDate,
+        body.type,
       );
       return res
         .status(statusCode.CREATED)
