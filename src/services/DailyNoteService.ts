@@ -18,7 +18,6 @@ export class DailyNoteService {
           planDate,
         },
       });
-      console.log(userDailyNote);
 
       if (!userDailyNote) {
         return null;
