@@ -25,4 +25,5 @@ export const env = {
     jwtSecret: process.env.JWT_SECRET as string,
     jwtAlgo: process.env.JWT_ALGO as string,
   },
+  googleAuthKey: process.env.API_KEY as string,
 };
