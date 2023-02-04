@@ -1,9 +1,7 @@
-import { PlanOrder } from './../entities/PlanOrder';
 import { PlanOrderRepository } from './../repositories/PlanOrderRepository';
 import { Service } from 'typedi';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { PlanRepository } from '../repositories/PlanRepository';
-import dayjs from 'dayjs';
 
 @Service()
 export class PlanService {
@@ -202,7 +200,7 @@ export class PlanService {
   public async createPlan(
     userId: number,
     planName: string,
-    date: Date,
+    planDate: string,
     type: string,
   ) {
     try {
@@ -215,7 +213,7 @@ export class PlanService {
             where: {
               user_id: userId,
               type: type,
-              planDate: date,
+              planDate,
             },
           });
 
@@ -224,7 +222,7 @@ export class PlanService {
             const dailyplanOrder = this.planOrderRepository.create({
               user_id: userId,
               type: type,
-              planDate: date,
+              planDate,
               planList: [],
             });
             existPlanOrder = [
@@ -234,7 +232,7 @@ export class PlanService {
             const reschedulePlanOrder = this.planOrderRepository.create({
               user_id: userId,
               type: 'reschedule',
-              planDate: date,
+              planDate,
               planList: [],
             });
             await this.planOrderRepository.save(reschedulePlanOrder);
@@ -243,7 +241,7 @@ export class PlanService {
           //* Plan 테이블에 계획 블록 생성
           const planData = this.planRepository.create({
             planName: planName,
-            planDate: date,
+            planDate,
             user: {
               id: userId,
             },
@@ -260,7 +258,7 @@ export class PlanService {
             {
               user_id: userId,
               type: type,
-              planDate: date,
+              planDate,
             },
             {
               planList: planList,
@@ -270,12 +268,13 @@ export class PlanService {
           //* response 반환
           const data = {
             id: createPlan.id,
-            planDate: dayjs(createPlan.planDate).format('YYYY-MM-DD'),
+            planDate: createPlan.planDate,
             planName: createPlan.planName,
             colorchip: createPlan.colorchip,
             planTime: createPlan.planTime,
             fulfilTime: createPlan.fulfillTime,
             type: type,
+            isCompleted: createPlan.isCompleted,
             createdAt: createPlan.createdAt,
           };
           return data;
@@ -288,15 +287,13 @@ export class PlanService {
             where: {
               user_id: userId,
               type: type,
-              planDate: date,
             },
           });
           if (existPlanOrder.length == 0) {
-            //* planOrder가 없다면 그 날의 routine planOrder 생성
+            //* planOrder가 없다면 routine planOrder 생성
             const routinePlanOrder = this.planOrderRepository.create({
               user_id: userId,
               type: type,
-              planDate: date,
               planList: [],
             });
             existPlanOrder = [
@@ -306,8 +303,7 @@ export class PlanService {
 
           //* Plan 테이블에 계획 블록 생성
           const planData = await this.planRepository.create({
-            planName: planName,
-            planDate: date,
+            planName,
             user: {
               id: userId,
             },
@@ -323,21 +319,21 @@ export class PlanService {
           await this.planOrderRepository.update(
             {
               user_id: userId,
-              type: type,
-              planDate: date,
+              type,
             },
             {
-              planList: planList,
+              planList,
             },
           );
           const data = {
             id: routinePlan.id,
-            planDate: dayjs(routinePlan.planDate).format('YYYY-MM-DD'),
+            planDate: routinePlan.planDate,
             planName: routinePlan.planName,
             colorchip: routinePlan.colorchip,
             planTime: routinePlan.planTime,
             fulfilTime: routinePlan.fulfillTime,
             type: type,
+            isCompleted: routinePlan.isCompleted,
             createdAt: routinePlan.createdAt,
           };
           return data;
