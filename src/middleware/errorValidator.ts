@@ -42,3 +42,5 @@ export const deletePlanValidation = [
   query('type').notEmpty().isIn(['daily', 'routine', 'reschedule']),
   query('planDate').notEmpty(),
 ];
+
+export const movePlanValidation = [query('planDate').notEmpty()];
