@@ -10,16 +10,15 @@ export class PlanService {
     @InjectRepository() private planOrderRepository: PlanOrderRepository,
   ) {}
 
-  public async getPlans(userId: number, type: string, date: string) {
+  public async getPlans(userId: number, type: string, planDate: string) {
     try {
       const totalPlan = await this.planOrderRepository.find({
         where: {
           user_id: userId,
           type,
-          planDate: date,
+          planDate,
         },
       });
-
       if (totalPlan.length == 0) {
         return null;
       }
@@ -28,8 +27,19 @@ export class PlanService {
       switch (type) {
         case 'daily': {
           const plans = await Promise.all(
-            totalPlanList.map((plan: number) => {
-              const result = this.planRepository.findOne(plan);
+            totalPlanList.map(async (plan: number) => {
+              const data = await this.planRepository.findOne(plan);
+              if (!data) {
+                return null;
+              }
+              const result = {
+                id: data.id,
+                planDate: data.planDate,
+                planName: data.planName,
+                colorChip: data.colorchip,
+                isCompleted: data.isCompleted,
+                createdAt: data.createdAt,
+              };
               return result;
             }),
           );
@@ -37,8 +47,19 @@ export class PlanService {
         }
         case 'reschedule': {
           const plans = await Promise.all(
-            totalPlanList.map((plan: number) => {
-              const result = this.planRepository.findOne(plan);
+            totalPlanList.map(async (plan: number) => {
+              const data = await this.planRepository.findOne(plan);
+              if (!data) {
+                return null;
+              }
+              const result = {
+                id: data.id,
+                planDate: data.planDate,
+                planName: data.planName,
+                colorChip: data.colorchip,
+                isCompleted: data.isCompleted,
+                createdAt: data.createdAt,
+              };
               return result;
             }),
           );
@@ -46,8 +67,19 @@ export class PlanService {
         }
         case 'routine': {
           const plans = await Promise.all(
-            totalPlanList.map((plan: number) => {
-              const result = this.planRepository.findOne(plan);
+            totalPlanList.map(async (plan: number) => {
+              const data = await this.planRepository.findOne(plan);
+              if (!data) {
+                return null;
+              }
+              const result = {
+                id: data.id,
+                planDate: data.planDate,
+                planName: data.planName,
+                colorChip: data.colorchip,
+                isCompleted: data.isCompleted,
+                createdAt: data.createdAt,
+              };
               return result;
             }),
           );
@@ -55,6 +87,7 @@ export class PlanService {
         }
       }
     } catch (error) {
+      console.log(error);
       throw error;
     }
   }
@@ -62,47 +95,51 @@ export class PlanService {
     userId: number,
     planId: number,
     planName: string,
-    colorChip: string,
-    date: string,
+    colorchip: string,
+    planDate: string,
+    isCompleted: boolean,
   ) {
     try {
       if (planName) {
         await this.planRepository.update(
           {
             id: planId,
-            user: {
-              id: userId,
-            },
           },
           {
-            planName: planName,
+            planName,
           },
         );
       }
-      if (colorChip) {
+      if (colorchip) {
         await this.planRepository.update(
           {
             id: planId,
-            user: {
-              id: userId,
-            },
           },
           {
-            colorchip: colorChip,
+            colorchip,
+          },
+        );
+      }
+
+      if (isCompleted) {
+        await this.planRepository.update(
+          {
+            id: planId,
+          },
+          {
+            isCompleted,
           },
         );
       }
       //* 우회 취소
-      if (date) {
+      if (planDate) {
         //* 우회할 계획에서 계획블록 섹션으로 옮길 id 찾기
         const reschedulePlan = await this.planOrderRepository.find({
           where: {
             user_id: userId,
             type: 'reschedule',
-            planDate: date,
           },
         });
-
         if (reschedulePlan.length == 0) {
           return null;
         }
@@ -121,7 +158,6 @@ export class PlanService {
           {
             user_id: userId,
             type: 'reschedule',
-            planDate: date,
           },
           {
             planList: reschedulePlanList,
@@ -133,7 +169,7 @@ export class PlanService {
           where: {
             user_id: userId,
             type: 'daily',
-            planDate: date,
+            planDate,
           },
         });
 
@@ -148,7 +184,7 @@ export class PlanService {
           {
             user_id: userId,
             type: 'daily',
-            planDate: date,
+            planDate,
           },
           {
             planList: dailyPlanList,
@@ -157,6 +193,7 @@ export class PlanService {
       }
     } catch (error) {
       console.log(error);
+      throw error;
     }
   }
 }
