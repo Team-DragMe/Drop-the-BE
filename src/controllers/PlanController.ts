@@ -10,8 +10,10 @@ import {
   Patch,
   Body,
   Post,
+  Delete,
 } from 'routing-controllers';
 import {
+  deletePlanValidation,
   errorValidator,
   getPlanValidation,
 } from '../middleware/errorValidator';
@@ -150,6 +152,46 @@ export class DailyPlanController {
       return res
         .status(statusCode.CREATED)
         .send(success(statusCode.CREATED, message.CREATE_PLAN_SUCCESS, data));
+    } catch (error) {
+      console.log(error);
+      return res
+        .status(statusCode.INTERNAL_SERVER_ERROR)
+        .send(
+          fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR),
+        );
+    }
+  }
+
+  @HttpCode(200)
+  @Delete('/:planId')
+  @UseBefore(...deletePlanValidation, errorValidator, auth)
+  @OpenAPI({
+    summary: '계획 블록 삭제',
+    description: '일간 계획, 우회할 계획, 루틴로드 계획블록 삭제',
+    statusCode: '200',
+  })
+  public async deletePlans(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Param('planId') planId: string,
+    @QueryParams() query: GetTypeAndDateQuery,
+  ) {
+    try {
+      const userId = res.locals.JwtPayload;
+      const data = await this.planService.deletePlans(
+        +userId,
+        +planId,
+        query.type,
+        query.planDate,
+      );
+      if (!data) {
+        return res
+          .status(statusCode.BAD_REQUEST)
+          .send(fail(statusCode.BAD_REQUEST, message.DELETE_PLAN_FAIL));
+      }
+      return res
+        .status(statusCode.OK)
+        .send(success(statusCode.OK, message.DELETE_PLAN_SUCCESS));
     } catch (error) {
       console.log(error);
       return res

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { body, check, query } from 'express-validator';
+import { body, check, param, query } from 'express-validator';
 import message from '../modules/responseMessage';
 import statusCode from '../modules/statusCode';
 import { fail } from '../modules/util';
@@ -36,3 +36,9 @@ export const getPlanValidation = [
 //   body('planDate').notEmpty(),
 //   body('type').notEmpty(),
 // ];
+
+export const deletePlanValidation = [
+  param('planId').notEmpty(),
+  query('type').notEmpty().isIn(['daily', 'routine', 'reschedule']),
+  query('planDate').notEmpty(),
+];

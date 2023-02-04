@@ -20,6 +20,8 @@ const message = {
   UPDATE_PLAN_SUCCESS: '계획블록 수정 성공',
   UPDATE_PLAN_FAIL: '계획블록 수정 실패',
   CREATE_PLAN_SUCCESS: '계획블록 생성 성공',
+  DELETE_PLAN_SUCCESS: '계획블록 삭제 성공',
+  DELETE_PLAN_FAIL: '계획블록 삭제 실패',
 };
 
 export default message;
