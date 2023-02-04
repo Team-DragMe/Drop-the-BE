@@ -15,7 +15,6 @@ export default (req: Request, res: Response, next: NextFunction) => {
 
   try {
     const decoded = verify(token as string); //? jwtHandler에서 만들어둔 verify로 토큰 검사
-
     //? 토큰 에러 분기 처리
     if (decoded === exceptionMessage.TOKEN_EXPIRED)
       return res
@@ -27,14 +26,14 @@ export default (req: Request, res: Response, next: NextFunction) => {
         .send(fail(statusCode.UNAUTHORIZED, message.INVALID_TOKEN));
 
     //? decode한 후 담겨있는 userId를 꺼내옴
-    const userId = (decoded as JwtPayload).id;
+    const userId = (decoded as JwtPayload).user.id;
     if (!userId)
       return res
         .status(statusCode.UNAUTHORIZED)
         .send(fail(statusCode.UNAUTHORIZED, message.INVALID_TOKEN));
 
-    //? 얻어낸 userId 를 Request Body 내 userId 필드에 담고, 다음 미들웨어로 넘김( next() )
-    req.body.userId = userId;
+    //? 얻어낸 userId 를  JwtPayload 필드에 담고, 다음 미들웨어로 넘김( next() )
+    res.locals.JwtPayload = userId;
     next();
   } catch (error) {
     console.log(error);
@@ -44,5 +43,4 @@ export default (req: Request, res: Response, next: NextFunction) => {
         fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR),
       );
   }
-  next();
 };

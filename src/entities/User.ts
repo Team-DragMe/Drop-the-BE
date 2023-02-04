@@ -7,7 +7,7 @@ export class User {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ name: 'sns_id', nullable: true, type: 'bigint' })
+  @Column({ name: 'sns_id', nullable: true })
   snsId!: string;
 
   @Column({ nullable: false })

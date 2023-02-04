@@ -17,6 +17,8 @@ const message = {
 
   //계획 블록
   READ_PLAN_SUCCESS: '계획블록 조회 성공',
+  UPDATE_PLAN_SUCCESS: '계획블록 수정 성공',
+  UPDATE_PLAN_FAIL: '계획블록 수정 실패',
 };
 
 export default message;
