@@ -46,3 +46,5 @@ export const deletePlanValidation = [
 export const movePlanValidation = [query('planDate').notEmpty()];
 
 export const dailyNoteValidation = [query('planDate').notEmpty()];
+
+export const calendarValidation = [query('month').notEmpty()];
