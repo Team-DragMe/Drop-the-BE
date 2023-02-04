@@ -7,8 +7,8 @@ export class User {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ name: 'sns_id', nullable: false })
-  snsId!: number;
+  @Column({ name: 'sns_id', nullable: true })
+  snsId!: string;
 
   @Column({ nullable: false })
   email!: string;
@@ -17,12 +17,15 @@ export class User {
   @Column({ length: 10, nullable: false })
   nick?: string;
 
-  @Column({ length: 35 })
+  @Column({ length: 35, nullable: true })
   goal?: string;
 
   // 로그인한 플랫폼. ex) google
   @Column({ nullable: false })
   provider!: string;
+
+  @Column({ name: 'refresh_token', nullable: true })
+  refreshToken?: string;
 
   @OneToMany(() => Plan, (plan) => plan.user)
   dailyplans?: Plan[];
