@@ -13,7 +13,7 @@ export class Plan {
   id!: number;
 
   @Column({ name: 'plan_date', nullable: true })
-  planDate?: Date;
+  planDate?: string;
 
   @Column({ name: 'plan_name', length: 100, nullable: false })
   planName?: string;
