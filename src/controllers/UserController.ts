@@ -64,6 +64,11 @@ export class DailyNoteController {
     @BodyParam('goal') goal: string,
   ) {
     try {
+      if (!goal) {
+        return res
+          .status(statusCode.BAD_REQUEST)
+          .send(fail(statusCode.BAD_REQUEST, message.BAD_REQUEST));
+      }
       const userId = res.locals.JwtPayload;
       await this.userService.updateProfileInfo(+userId, goal);
       return res
