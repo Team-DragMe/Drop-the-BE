@@ -232,7 +232,6 @@ export class PlanService {
             const reschedulePlanOrder = this.planOrderRepository.create({
               user_id: userId,
               type: 'reschedule',
-              planDate,
               planList: [],
             });
             await this.planOrderRepository.insert(reschedulePlanOrder);
