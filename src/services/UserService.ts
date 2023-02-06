@@ -57,4 +57,19 @@ export class UserService {
       throw error;
     }
   }
+
+  public async updateProfileInfo(userId: number, goal: string) {
+    try {
+      await this.userRepository.update(
+        {
+          id: userId,
+        },
+        {
+          goal,
+        },
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
 }
