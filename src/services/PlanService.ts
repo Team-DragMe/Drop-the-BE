@@ -218,8 +218,28 @@ export class PlanService {
             },
           });
 
+          //* 우회할 계획 순서 배열이 있는지 확인
+          const existReschedulePlanOrder =
+            await this.planOrderRepository.findOne({
+              where: {
+                user_id: userId,
+                type: 'reschedule',
+              },
+            });
+
+          //* planOrder가 없다면 reschedule planOrder 생성
+          if (!existReschedulePlanOrder) {
+            const reschedulePlanOrder = this.planOrderRepository.create({
+              user_id: userId,
+              type: 'reschedule',
+              planDate,
+              planList: [],
+            });
+            await this.planOrderRepository.insert(reschedulePlanOrder);
+          }
+
           if (existPlanOrder.length == 0) {
-            //* planOrder가 없다면 그 날의 daily, reschedule planOrder 생성
+            //* planOrder가 없다면 그 날의 daily planOrder 생성
             const dailyplanOrder = this.planOrderRepository.create({
               user_id: userId,
               type: type,
@@ -229,14 +249,6 @@ export class PlanService {
             existPlanOrder = [
               await this.planOrderRepository.save(dailyplanOrder),
             ];
-
-            const reschedulePlanOrder = this.planOrderRepository.create({
-              user_id: userId,
-              type: 'reschedule',
-              planDate,
-              planList: [],
-            });
-            await this.planOrderRepository.save(reschedulePlanOrder);
           }
 
           //* Plan 테이블에 계획 블록 생성
