@@ -4,10 +4,8 @@ import {
   JsonController,
   Res,
   Req,
-  QueryParam,
   UseBefore,
   Patch,
-  BodyParam,
   Body,
 } from 'routing-controllers';
 import { OpenAPI } from 'routing-controllers-openapi';
