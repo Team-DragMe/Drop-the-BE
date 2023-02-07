@@ -8,6 +8,7 @@ import {
   UseBefore,
   Patch,
   BodyParam,
+  Body,
 } from 'routing-controllers';
 import { OpenAPI } from 'routing-controllers-openapi';
 import { Request, Response } from 'express';
@@ -55,22 +56,22 @@ export class DailyNoteController {
   @UseBefore(auth)
   @OpenAPI({
     summary: '마이페이지 수정',
-    description: '마이페이지에서 유저의 최종 목표를 수정합니다',
+    description: '마이페이지에서 유저의 닉네임 및 최종 목표를 수정합니다',
     statusCode: '200',
   })
   public async updateProfileInfo(
     @Req() req: Request,
     @Res() res: Response,
-    @BodyParam('goal') goal: string,
+    @Body() body: { name: string; goal: string },
   ) {
     try {
-      if (!goal) {
+      if (!body.name || !body.goal) {
         return res
           .status(statusCode.BAD_REQUEST)
           .send(fail(statusCode.BAD_REQUEST, message.BAD_REQUEST));
       }
       const userId = res.locals.JwtPayload;
-      await this.userService.updateProfileInfo(+userId, goal);
+      await this.userService.updateProfileInfo(+userId, body.name, body.goal);
       return res
         .status(statusCode.OK)
         .send(success(statusCode.OK, message.READ_PROFILE_SUCCESS));

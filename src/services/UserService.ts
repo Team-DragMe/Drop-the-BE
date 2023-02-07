@@ -58,16 +58,28 @@ export class UserService {
     }
   }
 
-  public async updateProfileInfo(userId: number, goal: string) {
+  public async updateProfileInfo(userId: number, name: string, goal: string) {
     try {
-      await this.userRepository.update(
-        {
-          id: userId,
-        },
-        {
-          goal,
-        },
-      );
+      if (name) {
+        await this.userRepository.update(
+          {
+            id: userId,
+          },
+          {
+            nick: name,
+          },
+        );
+      }
+      if (goal) {
+        await this.userRepository.update(
+          {
+            id: userId,
+          },
+          {
+            goal,
+          },
+        );
+      }
     } catch (error) {
       throw error;
     }
