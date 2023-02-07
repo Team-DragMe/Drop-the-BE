@@ -209,7 +209,7 @@ export class PlanService {
         case 'daily': {
           let existPlanOrder;
 
-          //* 계획하는 날짜에 planOrder가 있는지 확인
+          //* 계획하는 날짜에 daily planOrder가 있는지 확인
           existPlanOrder = await this.planOrderRepository.find({
             where: {
               user_id: userId,
@@ -218,35 +218,16 @@ export class PlanService {
             },
           });
 
-          //* 우회할 계획 순서 배열이 있는지 확인
-          const existReschedulePlanOrder =
-            await this.planOrderRepository.findOne({
-              where: {
-                user_id: userId,
-                type: 'reschedule',
-              },
-            });
-
-          //* planOrder가 없다면 reschedule planOrder 생성
-          if (!existReschedulePlanOrder) {
-            const reschedulePlanOrder = this.planOrderRepository.create({
-              user_id: userId,
-              type: 'reschedule',
-              planList: [],
-            });
-            await this.planOrderRepository.insert(reschedulePlanOrder);
-          }
-
           if (existPlanOrder.length == 0) {
             //* planOrder가 없다면 그 날의 daily planOrder 생성
-            const dailyplanOrder = this.planOrderRepository.create({
+            const dailyPlanOrder = this.planOrderRepository.create({
               user_id: userId,
               type: type,
               planDate,
               planList: [],
             });
             existPlanOrder = [
-              await this.planOrderRepository.save(dailyplanOrder),
+              await this.planOrderRepository.save(dailyPlanOrder),
             ];
           }
 
@@ -294,24 +275,13 @@ export class PlanService {
         case 'routine': {
           let existPlanOrder;
 
-          //* 계획하는 날짜에 planOrder가 있는지 확인
+          //* planOrder 탐색
           existPlanOrder = await this.planOrderRepository.find({
             where: {
               user_id: userId,
               type: type,
             },
           });
-          if (existPlanOrder.length == 0) {
-            //* planOrder가 없다면 routine planOrder 생성
-            const routinePlanOrder = this.planOrderRepository.create({
-              user_id: userId,
-              type: type,
-              planList: [],
-            });
-            existPlanOrder = [
-              await this.planOrderRepository.save(routinePlanOrder),
-            ];
-          }
 
           //* Plan 테이블에 계획 블록 생성
           const planData = await this.planRepository.create({
@@ -355,6 +325,25 @@ export class PlanService {
       throw error;
     }
   }
+
+  public async createInitReschedulePlanOrder(userId: number) {
+    const reschedulePlanOrder = this.planOrderRepository.create({
+      user_id: userId,
+      type: 'reschedule',
+      planList: [],
+    });
+    await this.planOrderRepository.insert(reschedulePlanOrder);
+  }
+
+  public async createInitRoutineRoadPlanOrder(userId: number) {
+    const routinePlanOrder = this.planOrderRepository.create({
+      user_id: userId,
+      type: 'routine',
+      planList: [],
+    });
+    await this.planOrderRepository.insert(routinePlanOrder);
+  }
+
   public async deletePlans(
     userId: number,
     planId: number,
