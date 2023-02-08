@@ -2,7 +2,7 @@ import { IsNotEmpty } from 'class-validator';
 
 export class DateTimeBlockDto {
   @IsNotEmpty()
-  date?: string;
+  planDate?: string;
   plans?: TimeBlockDto[];
 }
 
