@@ -25,6 +25,7 @@ const message = {
   DELETE_PLAN_FAIL: '계획블록 삭제 실패',
   MOVE_PLAN_ORDER_SUCCESS: '계획블록 순서 이동 및 변경 성공',
   READ_CALENDAR_PLAN_SUCCESS: '날짜별 계획블록 존재여부 조회 성공',
+  CANNOT_FIND_PLAN: '존재하지 않는 계획블록입니다.',
 
   //데일리 노트
   READ_DAILYNOTE_SUCCESS: '데일리노트 조회 성공',

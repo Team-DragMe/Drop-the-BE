@@ -3,6 +3,9 @@ import { InjectRepository } from 'typeorm-typedi-extensions';
 import { PlanRepository } from '../repositories/PlanRepository';
 import { DateTimeBlockDto, TimeBlockDto } from '../dtos/TimeBlockDto';
 import { Plan } from '../entities/Plan';
+import errorGenerator from '../middleware/errorGenerator';
+import message from '../modules/responseMessage';
+import statusCode from '../modules/statusCode';
 
 @Service()
 export class TimeBlockService {
@@ -19,7 +22,7 @@ export class TimeBlockService {
         },
       });
 
-      if (!plans) return null;
+      if (plans.length == 0) return null;
 
       const response = new DateTimeBlockDto();
       response.planDate = planDate;
@@ -27,9 +30,7 @@ export class TimeBlockService {
 
       return response;
     } catch (error) {
-      console.log(error);
-
-      return null;
+      throw error;
     }
   }
 
@@ -53,6 +54,14 @@ export class TimeBlockService {
               id: planId,
             },
           });
+
+          if (timeblockList.length == 0) {
+            return errorGenerator({
+              msg: message.CANNOT_FIND_PLAN,
+              statusCode: statusCode.BAD_REQUEST,
+            });
+          }
+
           const planTimeList = timeblockList.pop()?.planTime as number[];
           for (let time = start; time <= end; time++) {
             planTimeList.push(time);
@@ -73,6 +82,14 @@ export class TimeBlockService {
               id: planId,
             },
           });
+
+          if (timeblockList.length == 0) {
+            return errorGenerator({
+              msg: message.CANNOT_FIND_PLAN,
+              statusCode: statusCode.BAD_REQUEST,
+            });
+          }
+
           const planTimeList = timeblockList.pop()?.fulfillTime as number[];
           for (let time = start; time <= end; time++) {
             planTimeList.push(time);
@@ -100,6 +117,14 @@ export class TimeBlockService {
               id: planId,
             },
           });
+
+          if (timeblockList.length == 0) {
+            return errorGenerator({
+              msg: message.CANNOT_FIND_PLAN,
+              statusCode: statusCode.BAD_REQUEST,
+            });
+          }
+
           let planTimeList = timeblockList.pop()?.planTime as number[];
           for (let time = end; time <= start; time++) {
             planTimeList = planTimeList.filter((index) => index !== time);
@@ -120,6 +145,14 @@ export class TimeBlockService {
               id: planId,
             },
           });
+
+          if (timeblockList.length == 0) {
+            return errorGenerator({
+              msg: message.CANNOT_FIND_PLAN,
+              statusCode: statusCode.BAD_REQUEST,
+            });
+          }
+
           let planTimeList = timeblockList.pop()?.fulfillTime as number[];
           for (let time = end; time <= start; time++) {
             planTimeList = planTimeList.filter((index) => index !== time);
@@ -136,7 +169,7 @@ export class TimeBlockService {
         );
       }
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 

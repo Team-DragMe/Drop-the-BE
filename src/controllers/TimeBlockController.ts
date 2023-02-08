@@ -1,3 +1,4 @@
+import { globalErrorHandler } from './../middleware/errorHandler';
 import {
   Body,
   Get,
@@ -7,6 +8,7 @@ import {
   Post,
   QueryParam,
   Res,
+  UseAfter,
   UseBefore,
 } from 'routing-controllers';
 import { OpenAPI } from 'routing-controllers-openapi';
@@ -29,6 +31,7 @@ export class TimeBlockController {
   @HttpCode(200)
   @Get('/')
   @UseBefore(auth, ...getTimeBlockValidation, errorValidator)
+  @UseAfter(globalErrorHandler)
   @OpenAPI({
     summary: '타임블록 조회',
     description: '해당 유저, 해당 날짜의 타임블록 조회',
@@ -48,17 +51,14 @@ export class TimeBlockController {
         .status(statusCode.OK)
         .send(success(statusCode.OK, message.FETCH_TIMEBLOCK_SUCCESS, data));
     } catch (error) {
-      return res
-        .status(statusCode.INTERNAL_SERVER_ERROR)
-        .send(
-          fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR),
-        );
+      throw error;
     }
   }
 
   @HttpCode(200)
   @Post('/:planId')
   @UseBefore(auth, ...setTimeBlockValidation, errorValidator)
+  @UseAfter(globalErrorHandler)
   @OpenAPI({
     summary: '타임블록 설정',
     description: '해당 유저, 해당 날짜의 타임블록 설정',
@@ -83,16 +83,11 @@ export class TimeBlockController {
         body.start,
         body.end,
       );
-
       return res
         .status(statusCode.OK)
         .send(success(statusCode.OK, message.UPDATE_TIMEBLOCK_SUCCESS));
     } catch (error) {
-      return res
-        .status(statusCode.INTERNAL_SERVER_ERROR)
-        .send(
-          fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR),
-        );
+      throw error;
     }
   }
 }
