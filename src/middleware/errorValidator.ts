@@ -46,3 +46,7 @@ export const deletePlanValidation = [
 export const movePlanValidation = [query('planDate').notEmpty()];
 
 export const dailyNoteValidation = [query('planDate').notEmpty()];
+
+export const getTimeBlockValidation = [query('planDate').notEmpty()];
+
+export const setTimeBlockValidation = [param('planId').notEmpty()];
