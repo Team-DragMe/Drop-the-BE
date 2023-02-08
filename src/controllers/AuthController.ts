@@ -1,3 +1,4 @@
+import { PlanService } from './../services/PlanService';
 import {
   BodyParam,
   Get,
@@ -24,6 +25,7 @@ export class AuthController {
   constructor(
     private userService: UserService,
     private authService: AuthService,
+    private planService: PlanService,
   ) {}
 
   @HttpCode(200)
@@ -81,6 +83,11 @@ export class AuthController {
           accessToken: accessToken,
           refreshToken: refreshToken,
         };
+
+        //* 회원 가입 시, 서비스에서 활용할 우회할 계획 순서배열 & 루틴로드 순서배열 생성
+        await this.planService.createInitReschedulePlanOrder(newUser.id);
+        await this.planService.createInitRoutineRoadPlanOrder(newUser.id);
+
         return res
           .status(statusCode.OK)
           .send(success(statusCode.OK, message.SIGNUP_SUCCESS, data));
