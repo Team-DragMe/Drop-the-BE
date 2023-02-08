@@ -634,7 +634,6 @@ export class PlanService {
       );
       return data;
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }
