@@ -57,7 +57,6 @@ export class DailyNoteService {
       };
       return data;
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }

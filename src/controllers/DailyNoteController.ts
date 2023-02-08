@@ -1,3 +1,4 @@
+import { globalErrorHandler } from './../middleware/errorHandler';
 import {
   Get,
   HttpCode,
@@ -8,6 +9,7 @@ import {
   UseBefore,
   Post,
   Body,
+  UseAfter,
 } from 'routing-controllers';
 import { OpenAPI } from 'routing-controllers-openapi';
 import { Request, Response } from 'express';
@@ -58,11 +60,12 @@ export class DailyNoteController {
   @HttpCode(200)
   @Post('/')
   @UseBefore(auth)
+  @UseAfter(globalErrorHandler)
   @OpenAPI({
-    summary: '데일리노트 조회',
+    summary: '데일리노트 생성',
     description:
-      '하루를 마무리하기 위해 기록하는 데일리노트(이모지, 한 줄 소감, 메모)',
-    statusCode: '200',
+      '하루를 마무리하기 위해 기록하는 데일리노트(이모지, 한 줄 소감, 메모)를 작성합니다.',
+    statusCode: '201',
   })
   public async createDailyNote(
     @Req() req: Request,
@@ -95,12 +98,7 @@ export class DailyNoteController {
           success(statusCode.CREATED, message.CREATE_DAILYNOTE_SUCCESS, data),
         );
     } catch (error) {
-      console.log(error);
-      return res
-        .status(statusCode.INTERNAL_SERVER_ERROR)
-        .send(
-          fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR),
-        );
+      throw error;
     }
   }
 }
