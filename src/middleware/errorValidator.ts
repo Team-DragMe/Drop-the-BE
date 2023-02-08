@@ -47,6 +47,12 @@ export const movePlanValidation = [query('planDate').notEmpty()];
 
 export const dailyNoteValidation = [query('planDate').notEmpty()];
 
+export const calendarValidation = [
+  query('month')
+    .notEmpty()
+    .matches(/^\d{4}-(0[1-9]|1[012])$/),
+];
+
 export const getTimeBlockValidation = [query('planDate').notEmpty()];
 
 export const setTimeBlockValidation = [param('planId').notEmpty()];
