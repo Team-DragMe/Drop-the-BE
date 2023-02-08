@@ -12,8 +12,10 @@ import {
   Post,
   Delete,
   QueryParam,
+  UseAfter,
 } from 'routing-controllers';
 import {
+  calendarValidation,
   deletePlanValidation,
   errorValidator,
   getPlanValidation,
@@ -27,6 +29,7 @@ import statusCode from '../modules/statusCode';
 import message from '../modules/responseMessage';
 import { success, fail } from '../modules/util';
 import auth from '../middleware/auth';
+import { globalErrorHandler } from '../middleware/errorHandler';
 
 class GetTypeAndDateQuery {
   @IsString()
@@ -249,6 +252,32 @@ export class DailyPlanController {
         .send(
           fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR),
         );
+    }
+  }
+
+  @HttpCode(200)
+  @Get('/calendar')
+  @UseBefore(...calendarValidation, errorValidator, auth)
+  @UseAfter(globalErrorHandler)
+  @OpenAPI({
+    summary: '날짜별 계획블록 존재여부 조회',
+    description: '날짜별 계획블록 존재여부를 조회합니다.',
+    statusCode: '200',
+  })
+  public async getCalendarPlan(
+    @Req() req: Request,
+    @Res() res: Response,
+    @QueryParam('month') month: string,
+  ) {
+    try {
+      const userId = res.locals.JwtPayload;
+      const data = await this.planService.getCalendarPlan(+userId, month);
+
+      return res
+        .status(statusCode.OK)
+        .send(success(statusCode.OK, message.READ_CALENDAR_PLAN_SUCCESS, data));
+    } catch (error) {
+      throw error;
     }
   }
 }
