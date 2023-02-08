@@ -2,6 +2,9 @@ import { CreateUserDto } from './../dtos/UserDto';
 import { UserRepository } from './../repositories/UserRepository';
 import { Service } from 'typedi';
 import { InjectRepository } from 'typeorm-typedi-extensions';
+import errorGenerator from '../middleware/errorGenerator';
+import message from '../modules/responseMessage';
+import statusCode from '../modules/statusCode';
 
 @Service()
 export class UserService {
@@ -45,7 +48,10 @@ export class UserService {
         },
       });
       if (!profile) {
-        return null;
+        return errorGenerator({
+          msg: message.NO_USER,
+          statusCode: statusCode.BAD_REQUEST,
+        });
       }
       const data = {
         name: profile.nick,
