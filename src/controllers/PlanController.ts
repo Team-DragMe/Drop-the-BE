@@ -29,7 +29,7 @@ import statusCode from '../modules/statusCode';
 import message from '../modules/responseMessage';
 import { success, fail } from '../modules/util';
 import auth from '../middleware/auth';
-import { globalErrorHandler } from '../middleware/errorHandler';
+import { generalErrorHandler } from '../middleware/errorHandler';
 
 class GetTypeAndDateQuery {
   @IsString()
@@ -258,7 +258,7 @@ export class DailyPlanController {
   @HttpCode(200)
   @Get('/calendar')
   @UseBefore(...calendarValidation, errorValidator, auth)
-  @UseAfter(globalErrorHandler)
+  @UseAfter(generalErrorHandler)
   @OpenAPI({
     summary: '날짜별 계획블록 존재여부 조회',
     description: '날짜별 계획블록 존재여부를 조회합니다.',
