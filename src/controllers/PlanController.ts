@@ -117,6 +117,7 @@ export class DailyPlanController {
   @HttpCode(201)
   @Post('/')
   @UseBefore(auth)
+  @UseAfter(generalErrorHandler)
   @OpenAPI({
     summary: '계획 블록 생성',
     description: '일간 계획, 우회할 계획, 루틴로드 생성',
@@ -149,12 +150,7 @@ export class DailyPlanController {
         .status(statusCode.CREATED)
         .send(success(statusCode.CREATED, message.CREATE_PLAN_SUCCESS, data));
     } catch (error) {
-      console.log(error);
-      return res
-        .status(statusCode.INTERNAL_SERVER_ERROR)
-        .send(
-          fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR),
-        );
+      throw error;
     }
   }
 
