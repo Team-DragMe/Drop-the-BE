@@ -97,7 +97,7 @@ export class DailyPlanController {
   ) {
     try {
       const userId = res.locals.JwtPayload;
-      const data = await this.planService.updatePlans(
+      await this.planService.updatePlans(
         +userId,
         +planId,
         body.planName,
@@ -105,21 +105,11 @@ export class DailyPlanController {
         body.planDate,
         body.isCompleted,
       );
-      if (data === null) {
-        return res
-          .status(statusCode.BAD_REQUEST)
-          .send(fail(statusCode.BAD_REQUEST, message.UPDATE_PLAN_FAIL));
-      }
       return res
         .status(statusCode.OK)
         .send(success(statusCode.OK, message.UPDATE_PLAN_SUCCESS));
     } catch (error) {
-      console.log(error);
-      return res
-        .status(statusCode.INTERNAL_SERVER_ERROR)
-        .send(
-          fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR),
-        );
+      throw error;
     }
   }
 

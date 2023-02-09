@@ -4,6 +4,9 @@ import { Service } from 'typedi';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { PlanRepository } from '../repositories/PlanRepository';
 import { Like } from 'typeorm';
+import errorGenerator from '../middleware/errorGenerator';
+import message from '../modules/responseMessage';
+import statusCode from '../modules/statusCode';
 
 @Service()
 export class PlanService {
@@ -143,7 +146,10 @@ export class PlanService {
           },
         });
         if (reschedulePlan.length == 0) {
-          return null;
+          return errorGenerator({
+            msg: message.CANNOT_FIND_PLAN_ORDER,
+            statusCode: statusCode.DB_ERROR,
+          });
         }
         let planList = reschedulePlan.pop()?.planList as number[];
 
@@ -151,7 +157,10 @@ export class PlanService {
         const checkPlanList = planList.includes(planId);
 
         if (!checkPlanList) {
-          return null;
+          return errorGenerator({
+            msg: message.CANNOT_FIND_PLAN,
+            statusCode: statusCode.DB_ERROR,
+          });
         }
         //* 우회할 planList에서 planId 제거
         const reschedulePlanList = planList.filter((plan) => plan !== planId);
@@ -176,7 +185,10 @@ export class PlanService {
         });
 
         if (dailyPlan.length == 0) {
-          return null;
+          return errorGenerator({
+            msg: message.CANNOT_FIND_PLAN_ORDER,
+            statusCode: statusCode.DB_ERROR,
+          });
         }
         let dailyPlanList = dailyPlan.pop()?.planList as number[];
         //* 계획 블록 섹션에 추가
@@ -194,7 +206,6 @@ export class PlanService {
         );
       }
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }
