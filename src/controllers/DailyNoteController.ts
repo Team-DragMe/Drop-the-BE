@@ -1,4 +1,3 @@
-import { globalErrorHandler } from './../middleware/errorHandler';
 import {
   Get,
   HttpCode,
@@ -22,6 +21,7 @@ import {
   dailyNoteValidation,
   errorValidator,
 } from '../middleware/errorValidator';
+import { generalErrorHandler } from './../middleware/errorHandler';
 
 @JsonController('/dailynote')
 export class DailyNoteController {
@@ -30,6 +30,7 @@ export class DailyNoteController {
   @HttpCode(200)
   @Get('/')
   @UseBefore(...dailyNoteValidation, errorValidator, auth)
+  @UseAfter(generalErrorHandler)
   @OpenAPI({
     summary: '데일리노트 조회',
     description:
@@ -44,23 +45,23 @@ export class DailyNoteController {
     try {
       const userId = res.locals.JwtPayload;
       const data = await this.dailyNoteService.getDailyNote(+userId, planDate);
+      if (!data) {
+        return res
+          .status(statusCode.OK)
+          .send(success(statusCode.OK, message.NO_DAILYNOTE));
+      }
       return res
         .status(statusCode.OK)
         .send(success(statusCode.OK, message.READ_DAILYNOTE_SUCCESS, data));
     } catch (error) {
-      console.log(error);
-      return res
-        .status(statusCode.INTERNAL_SERVER_ERROR)
-        .send(
-          fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR),
-        );
+      throw error;
     }
   }
 
   @HttpCode(200)
   @Post('/')
   @UseBefore(auth)
-  @UseAfter(globalErrorHandler)
+  @UseAfter(generalErrorHandler)
   @OpenAPI({
     summary: '데일리노트 생성',
     description:
