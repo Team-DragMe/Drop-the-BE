@@ -26,4 +26,6 @@ export const env = {
     jwtAlgo: process.env.JWT_ALGO as string,
   },
   googleAuthKey: process.env.API_KEY as string,
+  ec2URL: process.env.EC2_URL as string,
+  baseURL: process.env.BASE_URL as string,
 };
