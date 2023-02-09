@@ -17,82 +17,69 @@ export class PlanService {
 
   public async getPlans(userId: number, type: string, planDate: string) {
     try {
-      const totalPlan = await this.planOrderRepository.find({
-        where: {
-          user_id: userId,
-          type,
-          planDate,
-        },
-      });
-      if (totalPlan.length == 0) {
-        return null;
+      if (type == 'daily') {
+        const totalPlan = await this.planOrderRepository.find({
+          where: {
+            user_id: userId,
+            type,
+            planDate,
+          },
+        });
+        if (totalPlan.length == 0) {
+          return totalPlan;
+        }
+        const totalPlanList = totalPlan.pop()?.planList as number[];
+        const plans = await Promise.all(
+          totalPlanList.map(async (plan: number) => {
+            const data = await this.planRepository.findOne(plan);
+            if (!data) {
+              return null;
+            }
+            const result = {
+              id: data.id,
+              planDate: data.planDate,
+              planName: data.planName,
+              colorChip: data.colorchip,
+              isCompleted: data.isCompleted,
+              createdAt: data.createdAt,
+            };
+            return result;
+          }),
+        );
+        return plans;
       }
 
-      const totalPlanList = totalPlan.pop()?.planList as number[];
-      switch (type) {
-        case 'daily': {
-          const plans = await Promise.all(
-            totalPlanList.map(async (plan: number) => {
-              const data = await this.planRepository.findOne(plan);
-              if (!data) {
-                return null;
-              }
-              const result = {
-                id: data.id,
-                planDate: data.planDate,
-                planName: data.planName,
-                colorChip: data.colorchip,
-                isCompleted: data.isCompleted,
-                createdAt: data.createdAt,
-              };
-              return result;
-            }),
-          );
-          return plans;
+      if (type == 'reschedule' || type == 'routine') {
+        const totalPlan = await this.planOrderRepository.find({
+          where: {
+            user_id: userId,
+            type,
+          },
+        });
+        if (totalPlan.length == 0) {
+          return totalPlan;
         }
-        case 'reschedule': {
-          const plans = await Promise.all(
-            totalPlanList.map(async (plan: number) => {
-              const data = await this.planRepository.findOne(plan);
-              if (!data) {
-                return null;
-              }
-              const result = {
-                id: data.id,
-                planDate: data.planDate,
-                planName: data.planName,
-                colorChip: data.colorchip,
-                isCompleted: data.isCompleted,
-                createdAt: data.createdAt,
-              };
-              return result;
-            }),
-          );
-          return plans;
-        }
-        case 'routine': {
-          const plans = await Promise.all(
-            totalPlanList.map(async (plan: number) => {
-              const data = await this.planRepository.findOne(plan);
-              if (!data) {
-                return null;
-              }
-              const result = {
-                id: data.id,
-                planDate: data.planDate,
-                planName: data.planName,
-                colorChip: data.colorchip,
-                isCompleted: data.isCompleted,
-                createdAt: data.createdAt,
-              };
-              return result;
-            }),
-          );
-          return plans;
-        }
+        const totalPlanList = totalPlan.pop()?.planList as number[];
+        const plans = await Promise.all(
+          totalPlanList.map(async (plan: number) => {
+            const data = await this.planRepository.findOne(plan);
+            if (!data) {
+              return null;
+            }
+            const result = {
+              id: data.id,
+              planDate: data.planDate,
+              planName: data.planName,
+              colorChip: data.colorchip,
+              isCompleted: data.isCompleted,
+              createdAt: data.createdAt,
+            };
+            return result;
+          }),
+        );
+        return plans;
       }
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }

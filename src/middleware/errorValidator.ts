@@ -21,7 +21,9 @@ export const errorValidator = (
 
 export const getPlanValidation = [
   query('type').notEmpty().isIn(['daily', 'routine', 'reschedule']),
-  query('planDate').notEmpty(),
+  check('planDate')
+    .if(query('planDate').exists())
+    .matches(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/),
 ];
 
 export const deletePlanValidation = [
