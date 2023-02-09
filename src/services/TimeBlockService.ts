@@ -22,8 +22,6 @@ export class TimeBlockService {
         },
       });
 
-      if (plans.length == 0) return null;
-
       const response = new DateTimeBlockDto();
       response.planDate = planDate;
       response.plans = this.planToDto(plans);
