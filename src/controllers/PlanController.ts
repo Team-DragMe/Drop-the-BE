@@ -44,6 +44,7 @@ export class DailyPlanController {
   @HttpCode(200)
   @Get('/')
   @UseBefore(...getPlanValidation, errorValidator, auth)
+  @UseAfter(generalErrorHandler)
   @OpenAPI({
     summary: '계획 블록 조회',
     description: '일간 계획, 우회할 계획, 루틴로드 조회',
@@ -157,6 +158,7 @@ export class DailyPlanController {
   @HttpCode(200)
   @Delete('/:planId')
   @UseBefore(...deletePlanValidation, errorValidator, auth)
+  @UseAfter(generalErrorHandler)
   @OpenAPI({
     summary: '계획 블록 삭제',
     description: '일간 계획, 우회할 계획, 루틴로드 계획블록 삭제',
@@ -187,6 +189,7 @@ export class DailyPlanController {
   @HttpCode(200)
   @Patch('/')
   @UseBefore(...movePlanValidation, errorValidator, auth)
+  @UseAfter(generalErrorHandler)
   @OpenAPI({
     summary: '계획 블록 순서 이동 및 변경',
     description: '계획 블록 순서 이동 및 변경합니다.',
@@ -223,12 +226,7 @@ export class DailyPlanController {
         .status(statusCode.OK)
         .send(success(statusCode.OK, message.MOVE_PLAN_ORDER_SUCCESS));
     } catch (error) {
-      console.log(error);
-      return res
-        .status(statusCode.INTERNAL_SERVER_ERROR)
-        .send(
-          fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR),
-        );
+      throw error;
     }
   }
 

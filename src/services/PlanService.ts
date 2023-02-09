@@ -471,7 +471,12 @@ export class PlanService {
             planDate,
           },
         });
-
+        if (findPlanList.length == 0) {
+          return errorGenerator({
+            msg: message.CANNOT_FIND_PLAN_ORDER,
+            statusCode: statusCode.DB_ERROR,
+          });
+        }
         changePlanList = findPlanList.pop()?.planList as number[];
         changePlanList = lastArray;
 
@@ -499,7 +504,10 @@ export class PlanService {
           },
         });
         if (!findPlanInfo) {
-          return null;
+          return errorGenerator({
+            msg: message.CANNOT_FIND_PLAN,
+            statusCode: statusCode.DB_ERROR,
+          });
         }
 
         //* 계획 블록 복사
