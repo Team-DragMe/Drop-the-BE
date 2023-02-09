@@ -78,6 +78,7 @@ export class DailyPlanController {
   @HttpCode(200)
   @Patch('/:planId')
   @UseBefore(auth)
+  @UseAfter(generalErrorHandler)
   @OpenAPI({
     summary: '계획 블록 수정',
     description: '일간 계획, 우회할 계획, 루틴로드 계획블록 수정',
