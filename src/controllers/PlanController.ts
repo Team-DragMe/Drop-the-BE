@@ -173,27 +173,17 @@ export class DailyPlanController {
   ) {
     try {
       const userId = res.locals.JwtPayload;
-      const data = await this.planService.deletePlans(
+      await this.planService.deletePlans(
         +userId,
         +planId,
         query.type,
         query.planDate,
       );
-      if (!data) {
-        return res
-          .status(statusCode.BAD_REQUEST)
-          .send(fail(statusCode.BAD_REQUEST, message.DELETE_PLAN_FAIL));
-      }
       return res
         .status(statusCode.OK)
         .send(success(statusCode.OK, message.DELETE_PLAN_SUCCESS));
     } catch (error) {
-      console.log(error);
-      return res
-        .status(statusCode.INTERNAL_SERVER_ERROR)
-        .send(
-          fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR),
-        );
+      throw error;
     }
   }
 

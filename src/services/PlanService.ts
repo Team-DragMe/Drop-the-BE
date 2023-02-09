@@ -375,7 +375,10 @@ export class PlanService {
 
         //* planList가 비어있을 경우 에러처리
         if (totalPlan.length == 0) {
-          return null;
+          return errorGenerator({
+            msg: message.CANNOT_FIND_PLAN_ORDER,
+            statusCode: statusCode.DB_ERROR,
+          });
         }
 
         let planList = totalPlan.pop()?.planList as number[];
@@ -384,7 +387,10 @@ export class PlanService {
         const checkPlanList = planList.includes(planId);
 
         if (!checkPlanList) {
-          return null;
+          return errorGenerator({
+            msg: message.CANNOT_FIND_PLAN,
+            statusCode: statusCode.DB_ERROR,
+          });
         }
         //* planList에서 planId 제거
         let updatePlanList = planList.filter((plan) => plan !== planId);
@@ -417,7 +423,10 @@ export class PlanService {
         });
         //* planList가 비어있을 경우 에러처리
         if (totalPlan.length == 0) {
-          return null;
+          return errorGenerator({
+            msg: message.CANNOT_FIND_PLAN_ORDER,
+            statusCode: statusCode.DB_ERROR,
+          });
         }
 
         let planList = totalPlan.pop()?.planList as number[];
@@ -426,7 +435,10 @@ export class PlanService {
         const checkPlanList = planList.includes(planId);
 
         if (!checkPlanList) {
-          return null;
+          return errorGenerator({
+            msg: message.CANNOT_FIND_PLAN,
+            statusCode: statusCode.DB_ERROR,
+          });
         }
         //* planList에서 planId 제거
         let updatePlanList = planList.filter((plan) => plan !== planId);
