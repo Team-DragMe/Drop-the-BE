@@ -14,7 +14,7 @@ const connectDB = async (): Promise<void> => {
       database: env.database.name,
       synchronize: env.database.synchronize,
       logging: env.database.logging,
-      entities: ['src/entities/**/*.ts'],
+      entities: [__dirname + '/entities/*{.ts, .js}'],
       namingStrategy: new SnakeNamingStrategy(),
     };
 
