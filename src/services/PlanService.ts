@@ -4,6 +4,9 @@ import { Service } from 'typedi';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { PlanRepository } from '../repositories/PlanRepository';
 import { Like } from 'typeorm';
+import errorGenerator from '../middleware/errorGenerator';
+import message from '../modules/responseMessage';
+import statusCode from '../modules/statusCode';
 
 @Service()
 export class PlanService {
@@ -14,82 +17,69 @@ export class PlanService {
 
   public async getPlans(userId: number, type: string, planDate: string) {
     try {
-      const totalPlan = await this.planOrderRepository.find({
-        where: {
-          user_id: userId,
-          type,
-          planDate,
-        },
-      });
-      if (totalPlan.length == 0) {
-        return null;
+      if (type == 'daily') {
+        const totalPlan = await this.planOrderRepository.find({
+          where: {
+            user_id: userId,
+            type,
+            planDate,
+          },
+        });
+        if (totalPlan.length == 0) {
+          return totalPlan;
+        }
+        const totalPlanList = totalPlan.pop()?.planList as number[];
+        const plans = await Promise.all(
+          totalPlanList.map(async (plan: number) => {
+            const data = await this.planRepository.findOne(plan);
+            if (!data) {
+              return null;
+            }
+            const result = {
+              id: data.id,
+              planDate: data.planDate,
+              planName: data.planName,
+              colorChip: data.colorchip,
+              isCompleted: data.isCompleted,
+              createdAt: data.createdAt,
+            };
+            return result;
+          }),
+        );
+        return plans;
       }
 
-      const totalPlanList = totalPlan.pop()?.planList as number[];
-      switch (type) {
-        case 'daily': {
-          const plans = await Promise.all(
-            totalPlanList.map(async (plan: number) => {
-              const data = await this.planRepository.findOne(plan);
-              if (!data) {
-                return null;
-              }
-              const result = {
-                id: data.id,
-                planDate: data.planDate,
-                planName: data.planName,
-                colorChip: data.colorchip,
-                isCompleted: data.isCompleted,
-                createdAt: data.createdAt,
-              };
-              return result;
-            }),
-          );
-          return plans;
+      if (type == 'reschedule' || type == 'routine') {
+        const totalPlan = await this.planOrderRepository.find({
+          where: {
+            user_id: userId,
+            type,
+          },
+        });
+        if (totalPlan.length == 0) {
+          return totalPlan;
         }
-        case 'reschedule': {
-          const plans = await Promise.all(
-            totalPlanList.map(async (plan: number) => {
-              const data = await this.planRepository.findOne(plan);
-              if (!data) {
-                return null;
-              }
-              const result = {
-                id: data.id,
-                planDate: data.planDate,
-                planName: data.planName,
-                colorChip: data.colorchip,
-                isCompleted: data.isCompleted,
-                createdAt: data.createdAt,
-              };
-              return result;
-            }),
-          );
-          return plans;
-        }
-        case 'routine': {
-          const plans = await Promise.all(
-            totalPlanList.map(async (plan: number) => {
-              const data = await this.planRepository.findOne(plan);
-              if (!data) {
-                return null;
-              }
-              const result = {
-                id: data.id,
-                planDate: data.planDate,
-                planName: data.planName,
-                colorChip: data.colorchip,
-                isCompleted: data.isCompleted,
-                createdAt: data.createdAt,
-              };
-              return result;
-            }),
-          );
-          return plans;
-        }
+        const totalPlanList = totalPlan.pop()?.planList as number[];
+        const plans = await Promise.all(
+          totalPlanList.map(async (plan: number) => {
+            const data = await this.planRepository.findOne(plan);
+            if (!data) {
+              return null;
+            }
+            const result = {
+              id: data.id,
+              planDate: data.planDate,
+              planName: data.planName,
+              colorChip: data.colorchip,
+              isCompleted: data.isCompleted,
+              createdAt: data.createdAt,
+            };
+            return result;
+          }),
+        );
+        return plans;
       }
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }
@@ -143,7 +133,10 @@ export class PlanService {
           },
         });
         if (reschedulePlan.length == 0) {
-          return null;
+          return errorGenerator({
+            msg: message.CANNOT_FIND_PLAN_ORDER,
+            statusCode: statusCode.DB_ERROR,
+          });
         }
         let planList = reschedulePlan.pop()?.planList as number[];
 
@@ -151,7 +144,10 @@ export class PlanService {
         const checkPlanList = planList.includes(planId);
 
         if (!checkPlanList) {
-          return null;
+          return errorGenerator({
+            msg: message.CANNOT_FIND_PLAN,
+            statusCode: statusCode.DB_ERROR,
+          });
         }
         //* 우회할 planList에서 planId 제거
         const reschedulePlanList = planList.filter((plan) => plan !== planId);
@@ -176,7 +172,10 @@ export class PlanService {
         });
 
         if (dailyPlan.length == 0) {
-          return null;
+          return errorGenerator({
+            msg: message.CANNOT_FIND_PLAN_ORDER,
+            statusCode: statusCode.DB_ERROR,
+          });
         }
         let dailyPlanList = dailyPlan.pop()?.planList as number[];
         //* 계획 블록 섹션에 추가
@@ -194,7 +193,6 @@ export class PlanService {
         );
       }
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }
@@ -364,7 +362,10 @@ export class PlanService {
 
         //* planList가 비어있을 경우 에러처리
         if (totalPlan.length == 0) {
-          return null;
+          return errorGenerator({
+            msg: message.CANNOT_FIND_PLAN_ORDER,
+            statusCode: statusCode.DB_ERROR,
+          });
         }
 
         let planList = totalPlan.pop()?.planList as number[];
@@ -373,7 +374,10 @@ export class PlanService {
         const checkPlanList = planList.includes(planId);
 
         if (!checkPlanList) {
-          return null;
+          return errorGenerator({
+            msg: message.CANNOT_FIND_PLAN,
+            statusCode: statusCode.DB_ERROR,
+          });
         }
         //* planList에서 planId 제거
         let updatePlanList = planList.filter((plan) => plan !== planId);
@@ -406,7 +410,10 @@ export class PlanService {
         });
         //* planList가 비어있을 경우 에러처리
         if (totalPlan.length == 0) {
-          return null;
+          return errorGenerator({
+            msg: message.CANNOT_FIND_PLAN_ORDER,
+            statusCode: statusCode.DB_ERROR,
+          });
         }
 
         let planList = totalPlan.pop()?.planList as number[];
@@ -415,7 +422,10 @@ export class PlanService {
         const checkPlanList = planList.includes(planId);
 
         if (!checkPlanList) {
-          return null;
+          return errorGenerator({
+            msg: message.CANNOT_FIND_PLAN,
+            statusCode: statusCode.DB_ERROR,
+          });
         }
         //* planList에서 planId 제거
         let updatePlanList = planList.filter((plan) => plan !== planId);
@@ -461,7 +471,12 @@ export class PlanService {
             planDate,
           },
         });
-
+        if (findPlanList.length == 0) {
+          return errorGenerator({
+            msg: message.CANNOT_FIND_PLAN_ORDER,
+            statusCode: statusCode.DB_ERROR,
+          });
+        }
         changePlanList = findPlanList.pop()?.planList as number[];
         changePlanList = lastArray;
 
@@ -489,7 +504,10 @@ export class PlanService {
           },
         });
         if (!findPlanInfo) {
-          return null;
+          return errorGenerator({
+            msg: message.CANNOT_FIND_PLAN,
+            statusCode: statusCode.DB_ERROR,
+          });
         }
 
         //* 계획 블록 복사

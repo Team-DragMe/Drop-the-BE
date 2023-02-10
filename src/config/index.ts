@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 
 // Set the NODE_ENV to 'development' by default
-process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+// process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 const envFound = dotenv.config();
 if (envFound.error) {
@@ -11,6 +11,7 @@ if (envFound.error) {
 }
 
 export const env = {
+  env: process.env.NODE_ENV as string,
   port: parseInt(process.env.PORT as string, 10),
   database: {
     host: process.env.DB_HOST,
@@ -26,4 +27,7 @@ export const env = {
     jwtAlgo: process.env.JWT_ALGO as string,
   },
   googleAuthKey: process.env.API_KEY as string,
+  ec2URL: process.env.EC2_URL as string,
+  baseURL: process.env.BASE_URL as string,
+  slackWebHookURL: process.env.SLACK_WEBHOOK_URL as string,
 };

@@ -1,5 +1,6 @@
 import { Service } from 'typedi';
 import { InjectRepository } from 'typeorm-typedi-extensions';
+import message from '../modules/responseMessage';
 import { DailyNoteRepository } from '../repositories/DailyNoteRepository';
 
 @Service()
@@ -25,7 +26,6 @@ export class DailyNoteService {
         return userDailyNote;
       }
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }

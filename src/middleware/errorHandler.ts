@@ -1,31 +1,17 @@
-import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import {
   ExpressErrorMiddlewareInterface,
   Middleware,
 } from 'routing-controllers';
 import responseMessage from '../modules/responseMessage';
+import { slackMessage } from '../modules/returnToSlackMessage';
+import { sendMessageToSlack } from '../modules/slack';
 import { fail } from '../modules/util';
 import { ErrorWithStatusCode } from './errorGenerator';
-
-// const generalErrorHandler: ErrorRequestHandler = (
-//   error: ErrorWithStatusCode,
-//   req: Request,
-//   res: Response,
-//   next: NextFunction,
-// ): void | Response => {
-//   const { message, statusCode } = error;
-//   // 인자로 statusCode를 넘기지 않는 경우, 500 에러를 보냄
-//   if (!statusCode || statusCode == 500) {
-//     return res
-//       .status(500)
-//       .send(fail(500, responseMessage.INTERNAL_SERVER_ERROR));
-//   } else {
-//     return res.status(statusCode).send(fail(statusCode, message));
-//   }
-// };
+import { env } from '../config';
 
 @Middleware({ type: 'after' })
-export class globalErrorHandler implements ExpressErrorMiddlewareInterface {
+export class generalErrorHandler implements ExpressErrorMiddlewareInterface {
   error(
     error: ErrorWithStatusCode,
     req: Request,
@@ -34,6 +20,15 @@ export class globalErrorHandler implements ExpressErrorMiddlewareInterface {
   ) {
     const { message, statusCode } = error;
     if (!statusCode || statusCode == 500) {
+      if (env.env === 'production') {
+        const errorMessage: string = slackMessage(
+          req.method.toUpperCase(),
+          req.originalUrl,
+          error.stack,
+          res.locals.JwtPayload,
+        );
+        sendMessageToSlack(errorMessage);
+      }
       return res
         .status(500)
         .send(fail(500, responseMessage.INTERNAL_SERVER_ERROR));

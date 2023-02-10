@@ -1,4 +1,3 @@
-import { globalErrorHandler } from './../middleware/errorHandler';
 import {
   Get,
   HttpCode,
@@ -17,6 +16,7 @@ import message from '../modules/responseMessage';
 import { success, fail } from '../modules/util';
 import { UserService } from '../services/UserService';
 import auth from '../middleware/auth';
+import { generalErrorHandler } from './../middleware/errorHandler';
 
 @JsonController('/user')
 export class DailyNoteController {
@@ -25,7 +25,7 @@ export class DailyNoteController {
   @HttpCode(200)
   @Get('/profile')
   @UseBefore(auth)
-  @UseAfter(globalErrorHandler)
+  @UseAfter(generalErrorHandler)
   @OpenAPI({
     summary: '마이페이지 조회',
     description: '유저의 프로필 정보를 조회합니다',
@@ -46,7 +46,7 @@ export class DailyNoteController {
   @HttpCode(200)
   @Patch('/profile')
   @UseBefore(auth)
-  @UseAfter(globalErrorHandler)
+  @UseAfter(generalErrorHandler)
   @OpenAPI({
     summary: '마이페이지 수정',
     description: '마이페이지에서 유저의 닉네임 및 최종 목표를 수정합니다',
