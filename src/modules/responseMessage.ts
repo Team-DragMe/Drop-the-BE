@@ -26,10 +26,12 @@ const message = {
   MOVE_PLAN_ORDER_SUCCESS: '계획블록 순서 이동 및 변경 성공',
   READ_CALENDAR_PLAN_SUCCESS: '날짜별 계획블록 존재여부 조회 성공',
   CANNOT_FIND_PLAN: '존재하지 않는 계획블록입니다.',
+  CANNOT_FIND_PLAN_ORDER: '순서 배열이 존재하지 않습니다.',
 
   //데일리 노트
   READ_DAILYNOTE_SUCCESS: '데일리노트 조회 성공',
   CREATE_DAILYNOTE_SUCCESS: '데일리노트 작성 성공',
+  NO_DAILYNOTE: '해당 날짜의 데일리노트가 없습니다.',
 
   //타임 블록
   FETCH_TIMEBLOCK_SUCCESS: '타임블록 조회 성공',

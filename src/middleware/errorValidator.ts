@@ -21,31 +21,26 @@ export const errorValidator = (
 
 export const getPlanValidation = [
   query('type').notEmpty().isIn(['daily', 'routine', 'reschedule']),
-  query('planDate').notEmpty(),
+  check('planDate')
+    .if(query('planDate').exists())
+    .matches(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/),
 ];
-
-// export const updatePlanValidation = [
-//   check('planName').if(body('planName').exists()).notEmpty(),
-//   check('colorchip').if(body('colorchip').exists()).notEmpty(),
-//   check('planDate').if(body('planDate').exists()).notEmpty(),
-//   check('isCompleted').if(body('isCompleted').exists()).notEmpty(),
-// ];
-
-// export const createPlanValidation = [
-//   body('planName').notEmpty(),
-//   body('planDate').notEmpty(),
-//   body('type').notEmpty(),
-// ];
 
 export const deletePlanValidation = [
   param('planId').notEmpty(),
   query('type').notEmpty().isIn(['daily', 'routine', 'reschedule']),
-  query('planDate').notEmpty(),
+  query('planDate')
+    .notEmpty()
+    .matches(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/),
 ];
 
 export const movePlanValidation = [query('planDate').notEmpty()];
 
-export const dailyNoteValidation = [query('planDate').notEmpty()];
+export const dailyNoteValidation = [
+  query('planDate')
+    .notEmpty()
+    .matches(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/),
+];
 
 export const calendarValidation = [
   query('month')

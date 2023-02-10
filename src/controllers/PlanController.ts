@@ -29,7 +29,7 @@ import statusCode from '../modules/statusCode';
 import message from '../modules/responseMessage';
 import { success, fail } from '../modules/util';
 import auth from '../middleware/auth';
-import { globalErrorHandler } from '../middleware/errorHandler';
+import { generalErrorHandler } from '../middleware/errorHandler';
 
 class GetTypeAndDateQuery {
   @IsString()
@@ -44,6 +44,7 @@ export class DailyPlanController {
   @HttpCode(200)
   @Get('/')
   @UseBefore(...getPlanValidation, errorValidator, auth)
+  @UseAfter(generalErrorHandler)
   @OpenAPI({
     summary: '계획 블록 조회',
     description: '일간 계획, 우회할 계획, 루틴로드 조회',
@@ -78,6 +79,7 @@ export class DailyPlanController {
   @HttpCode(200)
   @Patch('/:planId')
   @UseBefore(auth)
+  @UseAfter(generalErrorHandler)
   @OpenAPI({
     summary: '계획 블록 수정',
     description: '일간 계획, 우회할 계획, 루틴로드 계획블록 수정',
@@ -97,7 +99,7 @@ export class DailyPlanController {
   ) {
     try {
       const userId = res.locals.JwtPayload;
-      const data = await this.planService.updatePlans(
+      await this.planService.updatePlans(
         +userId,
         +planId,
         body.planName,
@@ -105,27 +107,18 @@ export class DailyPlanController {
         body.planDate,
         body.isCompleted,
       );
-      if (data === null) {
-        return res
-          .status(statusCode.BAD_REQUEST)
-          .send(fail(statusCode.BAD_REQUEST, message.UPDATE_PLAN_FAIL));
-      }
       return res
         .status(statusCode.OK)
         .send(success(statusCode.OK, message.UPDATE_PLAN_SUCCESS));
     } catch (error) {
-      console.log(error);
-      return res
-        .status(statusCode.INTERNAL_SERVER_ERROR)
-        .send(
-          fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR),
-        );
+      throw error;
     }
   }
 
   @HttpCode(201)
   @Post('/')
   @UseBefore(auth)
+  @UseAfter(generalErrorHandler)
   @OpenAPI({
     summary: '계획 블록 생성',
     description: '일간 계획, 우회할 계획, 루틴로드 생성',
@@ -158,18 +151,14 @@ export class DailyPlanController {
         .status(statusCode.CREATED)
         .send(success(statusCode.CREATED, message.CREATE_PLAN_SUCCESS, data));
     } catch (error) {
-      console.log(error);
-      return res
-        .status(statusCode.INTERNAL_SERVER_ERROR)
-        .send(
-          fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR),
-        );
+      throw error;
     }
   }
 
   @HttpCode(200)
   @Delete('/:planId')
   @UseBefore(...deletePlanValidation, errorValidator, auth)
+  @UseAfter(generalErrorHandler)
   @OpenAPI({
     summary: '계획 블록 삭제',
     description: '일간 계획, 우회할 계획, 루틴로드 계획블록 삭제',
@@ -183,33 +172,24 @@ export class DailyPlanController {
   ) {
     try {
       const userId = res.locals.JwtPayload;
-      const data = await this.planService.deletePlans(
+      await this.planService.deletePlans(
         +userId,
         +planId,
         query.type,
         query.planDate,
       );
-      if (!data) {
-        return res
-          .status(statusCode.BAD_REQUEST)
-          .send(fail(statusCode.BAD_REQUEST, message.DELETE_PLAN_FAIL));
-      }
       return res
         .status(statusCode.OK)
         .send(success(statusCode.OK, message.DELETE_PLAN_SUCCESS));
     } catch (error) {
-      console.log(error);
-      return res
-        .status(statusCode.INTERNAL_SERVER_ERROR)
-        .send(
-          fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR),
-        );
+      throw error;
     }
   }
 
   @HttpCode(200)
   @Patch('/')
   @UseBefore(...movePlanValidation, errorValidator, auth)
+  @UseAfter(generalErrorHandler)
   @OpenAPI({
     summary: '계획 블록 순서 이동 및 변경',
     description: '계획 블록 순서 이동 및 변경합니다.',
@@ -246,19 +226,14 @@ export class DailyPlanController {
         .status(statusCode.OK)
         .send(success(statusCode.OK, message.MOVE_PLAN_ORDER_SUCCESS));
     } catch (error) {
-      console.log(error);
-      return res
-        .status(statusCode.INTERNAL_SERVER_ERROR)
-        .send(
-          fail(statusCode.INTERNAL_SERVER_ERROR, message.INTERNAL_SERVER_ERROR),
-        );
+      throw error;
     }
   }
 
   @HttpCode(200)
   @Get('/calendar')
   @UseBefore(...calendarValidation, errorValidator, auth)
-  @UseAfter(globalErrorHandler)
+  @UseAfter(generalErrorHandler)
   @OpenAPI({
     summary: '날짜별 계획블록 존재여부 조회',
     description: '날짜별 계획블록 존재여부를 조회합니다.',

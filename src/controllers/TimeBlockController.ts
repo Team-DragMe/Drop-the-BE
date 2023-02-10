@@ -1,4 +1,3 @@
-import { globalErrorHandler } from './../middleware/errorHandler';
 import {
   Body,
   Get,
@@ -23,6 +22,7 @@ import {
   errorValidator,
   setTimeBlockValidation,
 } from '../middleware/errorValidator';
+import { generalErrorHandler } from './../middleware/errorHandler';
 
 @JsonController('/timeblock')
 export class TimeBlockController {
@@ -31,7 +31,7 @@ export class TimeBlockController {
   @HttpCode(200)
   @Get('/')
   @UseBefore(auth, ...getTimeBlockValidation, errorValidator)
-  @UseAfter(globalErrorHandler)
+  @UseAfter(generalErrorHandler)
   @OpenAPI({
     summary: '타임블록 조회',
     description: '해당 유저, 해당 날짜의 타임블록 조회',
@@ -58,7 +58,7 @@ export class TimeBlockController {
   @HttpCode(200)
   @Post('/:planId')
   @UseBefore(auth, ...setTimeBlockValidation, errorValidator)
-  @UseAfter(globalErrorHandler)
+  @UseAfter(generalErrorHandler)
   @OpenAPI({
     summary: '타임블록 설정',
     description: '해당 유저, 해당 날짜의 타임블록 설정',
