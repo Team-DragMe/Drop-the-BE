@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 const app = express();
-import connectDB from './loaders/db';
+import connectDB from './db';
 import { routingControllerOptions } from './config/RoutingConfig';
 import { useContainer, useExpressServer } from 'routing-controllers';
 import Container from 'typedi';
