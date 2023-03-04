@@ -34,7 +34,6 @@ const message = {
   NO_DAILYNOTE: '해당 날짜의 데일리노트가 없습니다.',
 
   //타임 블록
-  FETCH_TIMEBLOCK_SUCCESS: '타임블록 조회 성공',
   UPDATE_TIMEBLOCK_SUCCESS: '타임블록 업데이트 성공',
 };
 

@@ -11,27 +11,6 @@ import statusCode from '../modules/statusCode';
 export class TimeBlockService {
   constructor(@InjectRepository() private planRepository: PlanRepository) {}
 
-  public async fetchPlanTimeBlock(userId: number, planDate: string) {
-    try {
-      const plans = await this.planRepository.find({
-        where: {
-          planDate,
-          user: {
-            id: userId,
-          },
-        },
-      });
-
-      const response = new DateTimeBlockDto();
-      response.planDate = planDate;
-      response.plans = this.planToDto(plans);
-
-      return response;
-    } catch (error) {
-      throw error;
-    }
-  }
-
   public async setTimeBlock(
     userId: number,
     planId: number,
@@ -169,19 +148,5 @@ export class TimeBlockService {
     } catch (error) {
       throw error;
     }
-  }
-
-  private planToDto(plans: Plan[]): TimeBlockDto[] {
-    const timeBlockList = plans.map((plan) => {
-      const timeBlock = new TimeBlockDto();
-
-      timeBlock.planId = plan.id;
-      timeBlock.planTime = plan.planTime;
-      timeBlock.fulfillTime = plan.fulfillTime;
-
-      return timeBlock;
-    });
-
-    return timeBlockList;
   }
 }
