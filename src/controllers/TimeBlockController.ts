@@ -29,33 +29,6 @@ export class TimeBlockController {
   constructor(private timeBlockService: TimeBlockService) {}
 
   @HttpCode(200)
-  @Get('/')
-  @UseBefore(auth, ...getTimeBlockValidation, errorValidator)
-  @UseAfter(generalErrorHandler)
-  @OpenAPI({
-    summary: '타임블록 조회',
-    description: '해당 유저, 해당 날짜의 타임블록 조회',
-    statusCode: '200',
-  })
-  public async fetchData(
-    @Res() res: Response,
-    @QueryParam('planDate') planDate: string,
-  ): Promise<Response> {
-    try {
-      const userId = res.locals.JwtPayload;
-      const data = await this.timeBlockService.fetchPlanTimeBlock(
-        userId,
-        planDate,
-      );
-      return res
-        .status(statusCode.OK)
-        .send(success(statusCode.OK, message.FETCH_TIMEBLOCK_SUCCESS, data));
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  @HttpCode(200)
   @Post('/:planId')
   @UseBefore(auth, ...setTimeBlockValidation, errorValidator)
   @UseAfter(generalErrorHandler)

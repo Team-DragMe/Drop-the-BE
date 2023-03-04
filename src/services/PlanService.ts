@@ -41,6 +41,8 @@ export class PlanService {
               planName: data.planName,
               colorChip: data.colorchip,
               isCompleted: data.isCompleted,
+              planTime: data.planTime,
+              fulfillTime: data.fulfillTime,
               createdAt: data.createdAt,
             };
             return result;
