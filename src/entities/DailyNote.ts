@@ -3,11 +3,12 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
-  CreateDateColumn,
+  Unique,
 } from 'typeorm';
 import { User } from './User';
 
 @Entity({ name: 'dailynotes' })
+@Unique(['planDate'])
 export class DailyNote {
   @PrimaryGeneratedColumn()
   id!: number;
