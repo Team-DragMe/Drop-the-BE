@@ -38,23 +38,26 @@ export class DailyNoteService {
     memo: string,
   ) {
     try {
-      const dailyNote = await this.dailyNoteRepository.create({
-        planDate,
-        emoji,
-        feel,
-        memo,
-        user: {
-          id: userId,
-        },
-      });
-      await this.dailyNoteRepository.insert(dailyNote);
+      await this.dailyNoteRepository.upsert(
+        [
+          {
+            planDate: planDate,
+            user: { id: userId },
+            emoji: emoji,
+            feel: feel,
+            memo: memo,
+          },
+        ],
+        ['planDate'],
+      );
 
       const data = {
-        planDate: dailyNote.planDate,
-        emoji: dailyNote.emoji,
-        feel: dailyNote.feel,
-        memo: dailyNote.memo,
+        planDate: planDate,
+        emoji: emoji,
+        feel: feel,
+        memo: memo,
       };
+
       return data;
     } catch (error) {
       throw error;
