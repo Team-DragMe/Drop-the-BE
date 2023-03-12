@@ -16,13 +16,13 @@ export class DailyNote {
   @Column({ name: 'plan_date', nullable: true })
   planDate?: string;
 
-  @Column()
+  @Column({ nullable: true })
   emoji?: string;
 
-  @Column()
+  @Column({ nullable: true })
   feel?: string;
 
-  @Column()
+  @Column({ nullable: true })
   memo?: string;
 
   @ManyToOne(() => User, (user) => user.dailynotes)
