@@ -129,11 +129,6 @@ export class DailyPlanController {
     @Req() req: Request,
     @Res() res: Response,
     @Body() createPlanDto: CreatePlanDto,
-    // body: {
-    //   planName: string;
-    //   planDate: string;
-    //   type: string;
-    // },
   ) {
     const { planName, planDate, type } = createPlanDto;
 
