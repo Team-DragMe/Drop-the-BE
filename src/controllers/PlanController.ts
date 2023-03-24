@@ -1,4 +1,4 @@
-import { CreatePlanDto } from './../dtos/PlanDto';
+import { CreatePlanDto, MovePlanDto } from './../dtos/PlanDto';
 import {
   Get,
   HttpCode,
@@ -197,15 +197,10 @@ export class DailyPlanController {
     @Req() req: Request,
     @Res() res: Response,
     @QueryParam('planDate') planDate: string,
-    @Body()
-    body: {
-      to: string;
-      from: string;
-      planId: number;
-      lastArray: number[];
-    },
+    @Body() movePlanDto: MovePlanDto,
   ) {
-    if (!body.to || !body.from || !body.lastArray) {
+    const { to, from, planId, lastArray } = movePlanDto;
+    if (!to || !from || !lastArray) {
       return res
         .status(statusCode.BAD_REQUEST)
         .send(fail(statusCode.BAD_REQUEST, message.BAD_REQUEST));
@@ -214,10 +209,10 @@ export class DailyPlanController {
       const userId = res.locals.JwtPayload;
       await this.planService.moveAndChangePlanOrder(
         +userId,
-        body.to,
-        body.from,
-        body.planId,
-        body.lastArray,
+        to,
+        from,
+        planId,
+        lastArray,
         planDate,
       );
       return res

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreatePlanDto {
   @IsNotEmpty()
@@ -12,4 +12,22 @@ export class CreatePlanDto {
   @IsNotEmpty()
   @IsString()
   type!: string;
+}
+
+export class MovePlanDto {
+  @IsNotEmpty()
+  @IsString()
+  to?: string;
+
+  @IsNotEmpty()
+  @IsString()
+  from?: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  planId!: number;
+
+  @IsNotEmpty()
+  @IsArray()
+  lastArray?: number[];
 }
