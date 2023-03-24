@@ -1,3 +1,4 @@
+import { CreatePlanDto } from './../dtos/PlanDto';
 import {
   Get,
   HttpCode,
@@ -127,14 +128,16 @@ export class DailyPlanController {
   public async createPlan(
     @Req() req: Request,
     @Res() res: Response,
-    @Body()
-    body: {
-      planName: string;
-      planDate: string;
-      type: string;
-    },
+    @Body() createPlanDto: CreatePlanDto,
+    // body: {
+    //   planName: string;
+    //   planDate: string;
+    //   type: string;
+    // },
   ) {
-    if (!body.planName || !body.planDate || !body.type) {
+    const { planName, planDate, type } = createPlanDto;
+
+    if (!planName || !planDate || !type) {
       return res
         .status(statusCode.BAD_REQUEST)
         .send(fail(statusCode.BAD_REQUEST, message.BAD_REQUEST));
@@ -143,9 +146,9 @@ export class DailyPlanController {
       const userId = res.locals.JwtPayload;
       const data = await this.planService.createPlan(
         userId,
-        body.planName,
-        body.planDate,
-        body.type,
+        planName,
+        planDate,
+        type,
       );
       return res
         .status(statusCode.CREATED)
