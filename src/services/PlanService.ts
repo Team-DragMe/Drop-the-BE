@@ -240,6 +240,8 @@ export class PlanService {
               id: userId,
             },
             colorchip: 'white',
+            planTime: [],
+            fulfillTime: [],
           });
           const createPlan = await this.planRepository.save(planData);
 
@@ -291,6 +293,8 @@ export class PlanService {
               id: userId,
             },
             colorchip: 'white',
+            planTime: [],
+            fulfillTime: [],
           });
           const routinePlan = await this.planRepository.save(planData);
 
