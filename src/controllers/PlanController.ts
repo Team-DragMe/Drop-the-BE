@@ -22,7 +22,7 @@ import {
   getPlanValidation,
   movePlanValidation,
 } from '../middleware/errorValidator';
-import { IsString } from 'class-validator';
+import { IsString, validate } from 'class-validator';
 import { PlanService } from '../services/PlanService';
 import { OpenAPI } from 'routing-controllers-openapi';
 import { Request, Response } from 'express';
@@ -128,16 +128,21 @@ export class DailyPlanController {
   public async createPlan(
     @Req() req: Request,
     @Res() res: Response,
-    @Body() createPlanDto: CreatePlanDto,
+    @Body() body: { planName: string; planDate: string; type: string },
   ) {
-    const { planName, planDate, type } = createPlanDto;
+    const createPlanDto = new CreatePlanDto();
+    createPlanDto.planName = body.planName;
+    createPlanDto.planDate = body.planDate;
+    createPlanDto.type = body.type;
 
-    if (!planName || !planDate || !type) {
+    const errors = await validate(createPlanDto);
+    if (errors.length != 0) {
       return res
         .status(statusCode.BAD_REQUEST)
         .send(fail(statusCode.BAD_REQUEST, message.BAD_REQUEST));
     }
     try {
+      const { planName, planDate, type } = createPlanDto;
       const userId = res.locals.JwtPayload;
       const data = await this.planService.createPlan(
         userId,
