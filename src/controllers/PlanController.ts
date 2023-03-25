@@ -1,4 +1,4 @@
-import { CreatePlanDto, MovePlanDto } from './../dtos/PlanDto';
+import { CreatePlanDto, MovePlanDto, UpdatePlanDto } from './../dtos/PlanDto';
 import {
   Get,
   HttpCode,
@@ -98,15 +98,28 @@ export class DailyPlanController {
       isCompleted: boolean;
     },
   ) {
+    const updatePlanDto = new UpdatePlanDto();
+    updatePlanDto.planName = body.planName;
+    updatePlanDto.colorchip = body.colorchip;
+    updatePlanDto.planDate = body.planDate;
+    updatePlanDto.isCompleted = body.isCompleted;
+
+    const errors = await validate(updatePlanDto);
+    if (errors.length != 0) {
+      return res
+        .status(statusCode.BAD_REQUEST)
+        .send(fail(statusCode.BAD_REQUEST, message.BAD_REQUEST));
+    }
     try {
+      const { planName, colorchip, planDate, isCompleted } = updatePlanDto;
       const userId = res.locals.JwtPayload;
       await this.planService.updatePlans(
         +userId,
         +planId,
-        body.planName,
-        body.colorchip,
-        body.planDate,
-        body.isCompleted,
+        planName,
+        colorchip,
+        planDate,
+        isCompleted,
       );
       return res
         .status(statusCode.OK)

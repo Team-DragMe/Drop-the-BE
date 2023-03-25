@@ -1,4 +1,10 @@
-import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+} from 'class-validator';
 
 export class CreatePlanDto {
   @IsNotEmpty()
@@ -30,4 +36,18 @@ export class MovePlanDto {
   @IsNotEmpty()
   @IsArray()
   lastArray?: number[];
+}
+
+export class UpdatePlanDto {
+  @IsString()
+  planName?: string;
+
+  @IsString()
+  colorchip?: string;
+
+  @IsBoolean()
+  isCompleted?: boolean;
+
+  @IsString()
+  planDate?: string;
 }
