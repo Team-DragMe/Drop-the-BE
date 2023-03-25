@@ -27,3 +27,11 @@ export class CreateUserDto {
   @IsString()
   public provider: string;
 }
+
+export class UpdateMyPageDto {
+  @IsString()
+  name?: string;
+
+  @IsString()
+  goal?: string;
+}
