@@ -202,15 +202,23 @@ export class DailyPlanController {
     @Req() req: Request,
     @Res() res: Response,
     @QueryParam('planDate') planDate: string,
-    @Body() movePlanDto: MovePlanDto,
+    @Body()
+    body: { to: string; from: string; planId: number; lastArray: number[] },
   ) {
-    const { to, from, planId, lastArray } = movePlanDto;
-    if (!to || !from || !lastArray) {
+    const movePlanDto = new MovePlanDto();
+    movePlanDto.to = body.to;
+    movePlanDto.from = body.from;
+    movePlanDto.planId = body.planId;
+    movePlanDto.lastArray = body.lastArray;
+
+    const errors = await validate(movePlanDto);
+    if (errors.length != 0) {
       return res
         .status(statusCode.BAD_REQUEST)
         .send(fail(statusCode.BAD_REQUEST, message.BAD_REQUEST));
     }
     try {
+      const { to, from, planId, lastArray } = movePlanDto;
       const userId = res.locals.JwtPayload;
       await this.planService.moveAndChangePlanOrder(
         +userId,
