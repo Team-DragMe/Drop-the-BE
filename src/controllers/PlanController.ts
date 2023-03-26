@@ -1,3 +1,4 @@
+import { CreatePlanDto, MovePlanDto, UpdatePlanDto } from './../dtos/PlanDto';
 import {
   Get,
   HttpCode,
@@ -21,7 +22,7 @@ import {
   getPlanValidation,
   movePlanValidation,
 } from '../middleware/errorValidator';
-import { IsString } from 'class-validator';
+import { IsString, validate } from 'class-validator';
 import { PlanService } from '../services/PlanService';
 import { OpenAPI } from 'routing-controllers-openapi';
 import { Request, Response } from 'express';
@@ -97,15 +98,28 @@ export class DailyPlanController {
       isCompleted: boolean;
     },
   ) {
+    const updatePlanDto = new UpdatePlanDto();
+    updatePlanDto.planName = body.planName;
+    updatePlanDto.colorchip = body.colorchip;
+    updatePlanDto.planDate = body.planDate;
+    updatePlanDto.isCompleted = body.isCompleted;
+
+    const errors = await validate(updatePlanDto);
+    if (errors.length != 0) {
+      return res
+        .status(statusCode.BAD_REQUEST)
+        .send(fail(statusCode.BAD_REQUEST, message.BAD_REQUEST));
+    }
     try {
+      const { planName, colorchip, planDate, isCompleted } = updatePlanDto;
       const userId = res.locals.JwtPayload;
       await this.planService.updatePlans(
         +userId,
         +planId,
-        body.planName,
-        body.colorchip,
-        body.planDate,
-        body.isCompleted,
+        planName,
+        colorchip,
+        planDate,
+        isCompleted,
       );
       return res
         .status(statusCode.OK)
@@ -127,25 +141,27 @@ export class DailyPlanController {
   public async createPlan(
     @Req() req: Request,
     @Res() res: Response,
-    @Body()
-    body: {
-      planName: string;
-      planDate: string;
-      type: string;
-    },
+    @Body() body: { planName: string; planDate: string; type: string },
   ) {
-    if (!body.planName || !body.planDate || !body.type) {
+    const createPlanDto = new CreatePlanDto();
+    createPlanDto.planName = body.planName;
+    createPlanDto.planDate = body.planDate;
+    createPlanDto.type = body.type;
+
+    const errors = await validate(createPlanDto);
+    if (errors.length != 0) {
       return res
         .status(statusCode.BAD_REQUEST)
         .send(fail(statusCode.BAD_REQUEST, message.BAD_REQUEST));
     }
     try {
+      const { planName, planDate, type } = createPlanDto;
       const userId = res.locals.JwtPayload;
       const data = await this.planService.createPlan(
         userId,
-        body.planName,
-        body.planDate,
-        body.type,
+        planName,
+        planDate,
+        type,
       );
       return res
         .status(statusCode.CREATED)
@@ -200,26 +216,29 @@ export class DailyPlanController {
     @Res() res: Response,
     @QueryParam('planDate') planDate: string,
     @Body()
-    body: {
-      to: string;
-      from: string;
-      planId: number;
-      lastArray: number[];
-    },
+    body: { to: string; from: string; planId: number; lastArray: number[] },
   ) {
-    if (!body.to || !body.from || !body.lastArray) {
+    const movePlanDto = new MovePlanDto();
+    movePlanDto.to = body.to;
+    movePlanDto.from = body.from;
+    movePlanDto.planId = body.planId;
+    movePlanDto.lastArray = body.lastArray;
+
+    const errors = await validate(movePlanDto);
+    if (errors.length != 0) {
       return res
         .status(statusCode.BAD_REQUEST)
         .send(fail(statusCode.BAD_REQUEST, message.BAD_REQUEST));
     }
     try {
+      const { to, from, planId, lastArray } = movePlanDto;
       const userId = res.locals.JwtPayload;
       await this.planService.moveAndChangePlanOrder(
         +userId,
-        body.to,
-        body.from,
-        body.planId,
-        body.lastArray,
+        to,
+        from,
+        planId,
+        lastArray,
         planDate,
       );
       return res

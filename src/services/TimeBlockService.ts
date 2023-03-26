@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { PlanRepository } from '../repositories/PlanRepository';
-import { DateTimeBlockDto, TimeBlockDto } from '../dtos/TimeBlockDto';
+import { TimeBlockDto } from '../dtos/TimeBlockDto';
 import { Plan } from '../entities/Plan';
 import errorGenerator from '../middleware/errorGenerator';
 import message from '../modules/responseMessage';
@@ -40,6 +40,7 @@ export class TimeBlockService {
           }
 
           const planTimeList = timeblockList.pop()?.planTime as number[];
+          console.log(planTimeList);
           for (let time = start; time <= end; time++) {
             planTimeList.push(time);
           }

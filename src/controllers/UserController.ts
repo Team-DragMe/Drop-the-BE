@@ -17,6 +17,8 @@ import { success, fail } from '../modules/util';
 import { UserService } from '../services/UserService';
 import auth from '../middleware/auth';
 import { generalErrorHandler } from './../middleware/errorHandler';
+import { UpdateMyPageDto } from '../dtos/UserDto';
+import { validate } from 'class-validator';
 
 @JsonController('/user')
 export class DailyNoteController {
@@ -57,9 +59,20 @@ export class DailyNoteController {
     @Res() res: Response,
     @Body() body: { name: string; goal: string },
   ) {
+    const updateMyPageDto = new UpdateMyPageDto();
+    updateMyPageDto.name = body.name;
+    updateMyPageDto.goal = body.goal;
+
+    const errors = await validate(updateMyPageDto);
+    if (errors.length != 0) {
+      return res
+        .status(statusCode.BAD_REQUEST)
+        .send(fail(statusCode.BAD_REQUEST, message.BAD_REQUEST));
+    }
     try {
+      const { name, goal } = updateMyPageDto;
       const userId = res.locals.JwtPayload;
-      await this.userService.updateProfileInfo(+userId, body.name, body.goal);
+      await this.userService.updateProfileInfo(+userId, name, goal);
       return res
         .status(statusCode.OK)
         .send(success(statusCode.OK, message.READ_PROFILE_SUCCESS));

@@ -1,11 +1,9 @@
 import {
   Body,
-  Get,
   HttpCode,
   JsonController,
   Param,
   Post,
-  QueryParam,
   Res,
   UseAfter,
   UseBefore,
@@ -18,11 +16,12 @@ import { success, fail } from '../modules/util';
 import message from '../modules/responseMessage';
 import auth from '../middleware/auth';
 import {
-  getTimeBlockValidation,
   errorValidator,
   setTimeBlockValidation,
 } from '../middleware/errorValidator';
 import { generalErrorHandler } from './../middleware/errorHandler';
+import { TimeBlockDto } from '../dtos/TimeBlockDto';
+import { validate } from 'class-validator';
 
 @JsonController('/timeblock')
 export class TimeBlockController {
@@ -42,19 +41,27 @@ export class TimeBlockController {
     @Param('planId') planId: number,
     @Body() body: { isPlan: boolean; start: number; end: number },
   ): Promise<Response> {
-    if (body.isPlan == undefined || !body.start || !body.end) {
+    const timeBlockDto = new TimeBlockDto();
+    timeBlockDto.isPlan = body.isPlan;
+    timeBlockDto.start = body.start;
+    timeBlockDto.end = body.end;
+
+    const errors = await validate(timeBlockDto);
+    if (errors.length != 0) {
       return res
         .status(statusCode.BAD_REQUEST)
         .send(fail(statusCode.BAD_REQUEST, message.BAD_REQUEST));
     }
+
     try {
+      const { isPlan, start, end } = timeBlockDto;
       const userId = res.locals.JwtPayload;
       await this.timeBlockService.setTimeBlock(
         userId,
         planId,
-        body.isPlan,
-        body.start,
-        body.end,
+        isPlan,
+        start,
+        end,
       );
       return res
         .status(statusCode.OK)

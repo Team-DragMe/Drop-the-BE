@@ -22,6 +22,8 @@ import {
   errorValidator,
 } from '../middleware/errorValidator';
 import { generalErrorHandler } from './../middleware/errorHandler';
+import { CreateDailyNoteDto } from '../dtos/DailyNotDto';
+import { validate } from 'class-validator';
 
 @JsonController('/dailynote')
 export class DailyNoteController {
@@ -79,19 +81,28 @@ export class DailyNoteController {
       memo: string;
     },
   ) {
-    if (!body.planDate) {
+    const createDailyNoteDto = new CreateDailyNoteDto();
+    createDailyNoteDto.planDate = body.planDate;
+    createDailyNoteDto.emoji = body.emoji;
+    createDailyNoteDto.feel = body.feel;
+    createDailyNoteDto.memo = body.memo;
+
+    const errors = await validate(createDailyNoteDto);
+    if (errors.length != 0) {
       return res
         .status(statusCode.BAD_REQUEST)
         .send(fail(statusCode.BAD_REQUEST, message.BAD_REQUEST));
     }
+
     try {
+      const { planDate, emoji, feel, memo } = createDailyNoteDto;
       const userId = res.locals.JwtPayload;
       const data = await this.dailyNoteService.createDailyNote(
         +userId,
-        body.planDate,
-        body.emoji,
-        body.feel,
-        body.memo,
+        planDate,
+        emoji,
+        feel,
+        memo,
       );
       return res
         .status(statusCode.CREATED)

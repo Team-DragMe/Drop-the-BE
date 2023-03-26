@@ -240,6 +240,8 @@ export class PlanService {
               id: userId,
             },
             colorchip: 'white',
+            planTime: [],
+            fulfillTime: [],
           });
           const createPlan = await this.planRepository.save(planData);
 
@@ -285,12 +287,14 @@ export class PlanService {
           });
 
           //* Plan 테이블에 계획 블록 생성
-          const planData = await this.planRepository.create({
+          const planData = this.planRepository.create({
             planName,
             user: {
               id: userId,
             },
             colorchip: 'white',
+            planTime: [],
+            fulfillTime: [],
           });
           const routinePlan = await this.planRepository.save(planData);
 
@@ -320,6 +324,12 @@ export class PlanService {
             createdAt: routinePlan.createdAt,
           };
           return data;
+        }
+        default: {
+          throw errorGenerator({
+            statusCode: statusCode.BAD_REQUEST,
+            msg: message.BAD_REQUEST,
+          });
         }
       }
     } catch (error) {

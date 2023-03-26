@@ -1,14 +1,15 @@
-import { IsNotEmpty } from 'class-validator';
-
-export class DateTimeBlockDto {
-  @IsNotEmpty()
-  planDate?: string;
-  plans?: TimeBlockDto[];
-}
+import { IsBoolean, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class TimeBlockDto {
   @IsNotEmpty()
-  planId?: number;
-  planTime?: number[];
-  fulfillTime?: number[];
+  @IsBoolean()
+  isPlan!: boolean;
+
+  @IsNotEmpty()
+  @IsNumber()
+  start!: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  end!: number;
 }
