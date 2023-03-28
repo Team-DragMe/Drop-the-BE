@@ -22,7 +22,7 @@ import {
   errorValidator,
 } from '../middleware/errorValidator';
 import { generalErrorHandler } from './../middleware/errorHandler';
-import { CreateDailyNoteDto } from '../dtos/DailyNotDto';
+import { CreateDailyNoteDto } from '../dtos/DailyNoteDto';
 import { validate } from 'class-validator';
 
 @JsonController('/dailynote')
