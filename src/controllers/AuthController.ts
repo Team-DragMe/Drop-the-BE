@@ -7,6 +7,7 @@ import {
   Post,
   Req,
   Res,
+  UseAfter,
 } from 'routing-controllers';
 import { CreateUserDto } from './../dtos/UserDto';
 import { createRefresh, sign, verify } from './../modules/jwtHandler';
@@ -20,6 +21,7 @@ import { fail, success } from '../modules/util';
 import { UserService } from '../services/UserService';
 import { AuthService } from '../services/AuthService';
 import { env } from '../config';
+import { generalErrorHandler } from '../middleware/errorHandler';
 
 @JsonController('/auth')
 export class AuthController {
@@ -31,6 +33,7 @@ export class AuthController {
 
   @HttpCode(200)
   @Post('/')
+  @UseAfter(generalErrorHandler)
   @OpenAPI({
     summary: '소셜 로그인 및 회원가입',
     description: '소셜 로그인 및 유저를 등록합니다.',
@@ -90,12 +93,7 @@ export class AuthController {
 
         return res
           .status(statusCode.OK)
-          .cookie('refreshToken', refreshToken, {
-            maxAge: 1000 * 60 * 60 * 24 * 30,
-            //httpOnly: env.httpOnly,
-            //sameSite: 'none',
-            //secure: true,
-          })
+          .cookie('refreshToken', refreshToken)
           .send(success(statusCode.OK, message.SIGNUP_SUCCESS, data));
       }
 
@@ -109,12 +107,7 @@ export class AuthController {
       };
       return res
         .status(statusCode.OK)
-        .cookie('refreshToken', refreshToken, {
-          maxAge: 1000 * 60 * 60 * 24 * 30,
-          //httpOnly: env.httpOnly,
-          //sameSite: 'none',
-          //secure: true,
-        })
+        .cookie('refreshToken', refreshToken)
         .send(success(statusCode.OK, message.SIGNIN_SUCCESS, data));
     } catch (error) {
       console.log(error);
@@ -128,6 +121,7 @@ export class AuthController {
 
   @HttpCode(200)
   @Get('/token')
+  @UseAfter(generalErrorHandler)
   @OpenAPI({
     summary: '토큰 재발급',
     description: 'refreshToken을 이용해서 accessToken을 재발급합니다.',
