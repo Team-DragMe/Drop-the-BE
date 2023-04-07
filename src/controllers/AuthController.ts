@@ -19,6 +19,7 @@ import statusCode from '../modules/statusCode';
 import { fail, success } from '../modules/util';
 import { UserService } from '../services/UserService';
 import { AuthService } from '../services/AuthService';
+import { env } from '../config';
 
 @JsonController('/auth')
 export class AuthController {
@@ -81,7 +82,6 @@ export class AuthController {
             provider: newUser.provider,
           },
           accessToken: accessToken,
-          refreshToken: refreshToken,
         };
 
         //* 회원 가입 시, 서비스에서 활용할 우회할 계획 순서배열 & 루틴로드 순서배열 생성
@@ -90,6 +90,11 @@ export class AuthController {
 
         return res
           .status(statusCode.OK)
+          .cookie('refreshToken', refreshToken, {
+            maxAge: 1000 * 60 ** 60 * 24 * 30,
+            httpOnly: env.httpOnly,
+            sameSite: 'lax',
+          })
           .send(success(statusCode.OK, message.SIGNUP_SUCCESS, data));
       }
 
@@ -100,10 +105,14 @@ export class AuthController {
 
       const data = {
         accessToken: accessToken,
-        refreshToken: refreshToken,
       };
       return res
         .status(statusCode.OK)
+        .cookie('refreshToken', refreshToken, {
+          maxAge: 1000 * 60 ** 60 * 24 * 30,
+          httpOnly: env.httpOnly,
+          sameSite: 'lax',
+        })
         .send(success(statusCode.OK, message.SIGNIN_SUCCESS, data));
     } catch (error) {
       console.log(error);

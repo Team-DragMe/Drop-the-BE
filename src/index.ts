@@ -6,6 +6,7 @@ import { useContainer, useExpressServer } from 'routing-controllers';
 import Container from 'typedi';
 import bodyParser from 'body-parser';
 import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
 
 require('dotenv').config();
 
@@ -17,6 +18,7 @@ interface ErrorType {
 }
 
 // Middlewares
+app.use(cookieParser());
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: false }));
