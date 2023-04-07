@@ -94,7 +94,7 @@ export class AuthController {
         return res
           .status(statusCode.OK)
           .cookie('refreshToken', refreshToken, {
-            domain: 'dragme.kr',
+            domain: 'localhost:3000',
             path: '/',
             sameSite: 'none',
             httpOnly: env.httpOnly,
@@ -114,7 +114,7 @@ export class AuthController {
       return res
         .status(statusCode.OK)
         .cookie('refreshToken', refreshToken, {
-          domain: 'localhost',
+          domain: 'localhost:3000',
           path: '/',
           sameSite: 'none',
           httpOnly: env.httpOnly,
