@@ -93,7 +93,13 @@ export class AuthController {
 
         return res
           .status(statusCode.OK)
-          .cookie('refreshToken', refreshToken, { sameSite: 'none' })
+          .cookie('refreshToken', refreshToken, {
+            domain: 'localhost',
+            path: '/',
+            sameSite: 'none',
+            httpOnly: env.httpOnly,
+            secure: true,
+          })
           .send(success(statusCode.OK, message.SIGNUP_SUCCESS, data));
       }
 
@@ -107,7 +113,13 @@ export class AuthController {
       };
       return res
         .status(statusCode.OK)
-        .cookie('refreshToken', refreshToken, { sameSite: 'none' })
+        .cookie('refreshToken', refreshToken, {
+          domain: 'localhost',
+          path: '/',
+          sameSite: 'none',
+          httpOnly: env.httpOnly,
+          secure: true,
+        })
         .send(success(statusCode.OK, message.SIGNIN_SUCCESS, data));
     } catch (error) {
       console.log(error);

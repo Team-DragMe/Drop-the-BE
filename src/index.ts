@@ -18,7 +18,6 @@ interface ErrorType {
 }
 
 // Middlewares
-app.use(cookieParser());
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -44,6 +43,7 @@ try {
 } catch (error) {
   console.log(error);
 }
+app.use(cookieParser());
 
 app
   .listen(process.env.PORT, () => {

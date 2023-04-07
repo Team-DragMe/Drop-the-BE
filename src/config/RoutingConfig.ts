@@ -10,6 +10,7 @@ export const routingControllerOptions = {
       'https://dragme.kr',
       'https://www.dragme.kr',
     ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   },
   routePrefix: '/api',
   controllers: [`${__dirname}/../controllers/*{.ts,.js}`],
