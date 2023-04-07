@@ -11,7 +11,7 @@ export const sign = (userId: number) => {
   };
 
   const accesstoken = jwt.sign(payload, env.jwt.jwtSecret, {
-    expiresIn: '30d',
+    expiresIn: '2h',
   });
   return accesstoken;
 };
