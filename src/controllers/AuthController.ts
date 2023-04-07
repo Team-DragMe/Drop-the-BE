@@ -94,6 +94,7 @@ export class AuthController {
         return res
           .status(statusCode.OK)
           .cookie('refreshToken', refreshToken, {
+            domain: 'http://localhost:3000',
             sameSite: 'none',
             secure: true,
           })
@@ -111,6 +112,7 @@ export class AuthController {
       return res
         .status(statusCode.OK)
         .cookie('refreshToken', refreshToken, {
+          domain: 'http://localhost:3000',
           sameSite: 'none',
           secure: true,
         })
