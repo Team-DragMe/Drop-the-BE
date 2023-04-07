@@ -93,11 +93,7 @@ export class AuthController {
 
         return res
           .status(statusCode.OK)
-          .cookie('refreshToken', refreshToken, {
-            domain: 'http://localhost:3000',
-            sameSite: 'none',
-            secure: true,
-          })
+          .cookie('refreshToken', refreshToken)
           .send(success(statusCode.OK, message.SIGNUP_SUCCESS, data));
       }
 
@@ -111,11 +107,7 @@ export class AuthController {
       };
       return res
         .status(statusCode.OK)
-        .cookie('refreshToken', refreshToken, {
-          domain: 'http://localhost:3000',
-          sameSite: 'none',
-          secure: true,
-        })
+        .cookie('refreshToken', refreshToken)
         .send(success(statusCode.OK, message.SIGNIN_SUCCESS, data));
     } catch (error) {
       console.log(error);
