@@ -30,4 +30,5 @@ export const env = {
   ec2URL: process.env.EC2_URL as string,
   baseURL: process.env.BASE_URL as string,
   slackWebHookURL: process.env.SLACK_WEBHOOK_URL as string,
+  httpOnly: process.env.HTTP_ONLY === 'true',
 };
