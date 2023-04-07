@@ -93,7 +93,8 @@ export class AuthController {
           .cookie('refreshToken', refreshToken, {
             maxAge: 1000 * 60 ** 60 * 24 * 30,
             httpOnly: env.httpOnly,
-            sameSite: 'lax',
+            sameSite: 'none',
+            secure: true,
           })
           .send(success(statusCode.OK, message.SIGNUP_SUCCESS, data));
       }
@@ -111,7 +112,8 @@ export class AuthController {
         .cookie('refreshToken', refreshToken, {
           maxAge: 1000 * 60 ** 60 * 24 * 30,
           httpOnly: env.httpOnly,
-          sameSite: 'lax',
+          sameSite: 'none',
+          secure: true,
         })
         .send(success(statusCode.OK, message.SIGNIN_SUCCESS, data));
     } catch (error) {
