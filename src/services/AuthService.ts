@@ -24,10 +24,12 @@ export class AuthService {
       if (!userId) return exceptionMessage.INVALID_USER;
       const name = user.data.name;
       const email = user.data.email;
+      const profile = user.data.picture;
       const googleUser: SocialUser = {
         userId: userId,
         name: name,
         email: email,
+        profile: profile,
       };
 
       return googleUser;
@@ -40,6 +42,7 @@ export class AuthService {
   public async getSocialUser(token: string) {
     try {
       const user = await this.googleAuth(token);
+      console.log();
       return user;
     } catch (error) {
       console.log(error);

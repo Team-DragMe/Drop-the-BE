@@ -30,6 +30,7 @@ export class UserService {
       const createUser = this.userRepository.create({
         email: createUserDto.email,
         nick: createUserDto.nick,
+        profile: createUserDto.profile,
         provider: createUserDto.provider,
         snsId: createUserDto.snsId,
       });

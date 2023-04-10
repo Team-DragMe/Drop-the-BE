@@ -4,10 +4,17 @@ import { IsNotEmpty, Length, IsEmail, IsString } from 'class-validator';
  * 유저 생성 DTO
  */
 export class CreateUserDto {
-  constructor(snsId: string, nick: string, email: string, provider: string) {
+  constructor(
+    snsId: string,
+    nick: string,
+    email: string,
+    profile: string,
+    provider: string,
+  ) {
     this.snsId = snsId;
     this.email = email;
     this.nick = nick;
+    this.profile = profile;
     this.provider = provider;
   }
 
@@ -22,6 +29,10 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   public nick: string;
+
+  @IsNotEmpty()
+  @IsString()
+  public profile: string;
 
   @IsNotEmpty()
   @IsString()
