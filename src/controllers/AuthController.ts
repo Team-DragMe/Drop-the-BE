@@ -22,6 +22,7 @@ import { UserService } from '../services/UserService';
 import { AuthService } from '../services/AuthService';
 import { env } from '../config';
 import { generalErrorHandler } from '../middleware/errorHandler';
+import cookie from '../modules/cookie';
 
 @JsonController('/auth')
 export class AuthController {
@@ -91,14 +92,11 @@ export class AuthController {
         await this.planService.createInitReschedulePlanOrder(newUser.id);
         await this.planService.createInitRoutineRoadPlanOrder(newUser.id);
 
+        const cookieString = cookie.setRefreshTokenCookie(refreshToken);
+        res.setHeader('Set-Cookie', cookieString);
+
         return res
           .status(statusCode.OK)
-          .cookie('refreshToken', refreshToken, {
-            path: '/',
-            sameSite: 'none',
-            httpOnly: env.httpOnly,
-            secure: true,
-          })
           .send(success(statusCode.OK, message.SIGNUP_SUCCESS, data));
       }
 
@@ -110,14 +108,12 @@ export class AuthController {
       const data = {
         accessToken: accessToken,
       };
+
+      const refreshCookie = cookie.setRefreshTokenCookie(refreshToken);
+      res.setHeader('Set-Cookie', refreshCookie);
+
       return res
         .status(statusCode.OK)
-        .cookie('refreshToken', refreshToken, {
-          path: '/',
-          sameSite: 'none',
-          httpOnly: env.httpOnly,
-          secure: true,
-        })
         .send(success(statusCode.OK, message.SIGNIN_SUCCESS, data));
     } catch (error) {
       console.log(error);
