@@ -6,7 +6,6 @@ import { useContainer, useExpressServer } from 'routing-controllers';
 import Container from 'typedi';
 import bodyParser from 'body-parser';
 import helmet from 'helmet';
-import cookieParser from 'cookie-parser';
 
 require('dotenv').config();
 
@@ -43,7 +42,6 @@ try {
 } catch (error) {
   console.log(error);
 }
-app.use(cookieParser());
 
 app
   .listen(process.env.PORT, () => {
