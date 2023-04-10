@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/cookie-parser": "^1.4.3",
+    "@types/cookie": "^0.5.1",
     "@types/express": "^4.17.13",
     "@types/jsonwebtoken": "^8.5.9",
     "@types/node": "^18.7.14",
@@ -29,7 +29,7 @@
     "body-parser": "^1.20.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
-    "cookie-parser": "^1.4.6",
+    "cookie": "^0.5.0",
     "cors": "^2.8.5",
     "dayjs": "^1.11.7",
     "dotenv": "^16.0.0",
