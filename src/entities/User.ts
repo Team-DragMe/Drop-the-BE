@@ -13,9 +13,11 @@ export class User {
   @Column({ nullable: false })
   email!: string;
 
-  // 마이페이지 뷰 작업 나오면 글자수 제한 수정 필요
   @Column({ length: 10, nullable: false })
   nick?: string;
+
+  @Column({ nullable: true })
+  profile?: string;
 
   @Column({ length: 35, nullable: true })
   goal?: string;

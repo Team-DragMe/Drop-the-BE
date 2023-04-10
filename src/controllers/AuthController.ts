@@ -49,7 +49,7 @@ export class AuthController {
     try {
       //* 구글 사용자 정보 가져오기
       const user = await this.authService.getSocialUser(token);
-
+      console.log(user);
       //* 구글 user가 없다면
       if (user == exceptionMessage.INVALID_USER) {
         return res
@@ -60,6 +60,7 @@ export class AuthController {
         (user as SocialUser).userId,
         (user as SocialUser).name,
         (user as SocialUser).email,
+        (user as SocialUser).profile,
         provider,
       );
       //* 서비스에 가입된 유저인지 확인
@@ -83,6 +84,7 @@ export class AuthController {
             id: newUser.id,
             email: newUser.email,
             nick: newUser.nick,
+            profile: newUser.profile,
             provider: newUser.provider,
           },
           accessToken: accessToken,
