@@ -40,9 +40,6 @@ export class CreateUserDto {
 }
 
 export class UpdateMyPageDto {
-  @IsString()
   name?: string;
-
-  @IsString()
   goal?: string;
 }
