@@ -30,6 +30,7 @@ const message = {
 
   //데일리 노트
   READ_DAILYNOTE_SUCCESS: '데일리노트 조회 성공',
+  UPDATE_PROFILE_SUCCESS: '데일리노트 수정 성공',
   CREATE_DAILYNOTE_SUCCESS: '데일리노트 작성 성공',
   NO_DAILYNOTE: '해당 날짜의 데일리노트가 없습니다.',
 

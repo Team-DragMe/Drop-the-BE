@@ -18,6 +18,7 @@ import { success, fail } from '../modules/util';
 import { DailyNoteService } from '../services/DailyNoteService';
 import auth from '../middleware/auth';
 import {
+  dailyNoteTypeValidation,
   dailyNoteValidation,
   errorValidator,
 } from '../middleware/errorValidator';
@@ -62,7 +63,7 @@ export class DailyNoteController {
 
   @HttpCode(200)
   @Post('/')
-  @UseBefore(auth)
+  @UseBefore(...dailyNoteTypeValidation, errorValidator, auth)
   @UseAfter(generalErrorHandler)
   @OpenAPI({
     summary: '데일리노트 생성',
@@ -73,21 +74,19 @@ export class DailyNoteController {
   public async createDailyNote(
     @Req() req: Request,
     @Res() res: Response,
+    @QueryParam('type') type: string,
     @Body()
     body: {
       planDate: string;
-      emoji: string;
-      feel: string;
-      memo: string;
+      content: string;
     },
   ) {
     const createDailyNoteDto = new CreateDailyNoteDto();
     createDailyNoteDto.planDate = body.planDate;
-    createDailyNoteDto.emoji = body.emoji;
-    createDailyNoteDto.feel = body.feel;
-    createDailyNoteDto.memo = body.memo;
+    createDailyNoteDto.content = body.content;
 
     const errors = await validate(createDailyNoteDto);
+    console.log(errors);
     if (errors.length != 0) {
       return res
         .status(statusCode.BAD_REQUEST)
@@ -95,14 +94,11 @@ export class DailyNoteController {
     }
 
     try {
-      const { planDate, emoji, feel, memo } = createDailyNoteDto;
       const userId = res.locals.JwtPayload;
       const data = await this.dailyNoteService.createDailyNote(
         +userId,
-        planDate,
-        emoji,
-        feel,
-        memo,
+        createDailyNoteDto,
+        type,
       );
       return res
         .status(statusCode.CREATED)

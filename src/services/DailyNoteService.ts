@@ -1,6 +1,6 @@
+import { CreateDailyNoteDto } from './../dtos/DailyNotDto';
 import { Service } from 'typedi';
 import { InjectRepository } from 'typeorm-typedi-extensions';
-import message from '../modules/responseMessage';
 import { DailyNoteRepository } from '../repositories/DailyNoteRepository';
 
 @Service()
@@ -32,30 +32,57 @@ export class DailyNoteService {
 
   public async createDailyNote(
     userId: number,
-    planDate: string,
-    emoji: string,
-    feel: string,
-    memo: string,
+    createDailyDto: CreateDailyNoteDto,
+    type: string,
   ) {
     try {
-      await this.dailyNoteRepository.upsert(
-        [
+      switch (type) {
+        case 'emoji': {
+          await this.dailyNoteRepository.upsert(
+            [
+              {
+                planDate: createDailyDto.planDate,
+                user: { id: userId },
+                emoji: createDailyDto.content,
+              },
+            ],
+            ['planDate'],
+          );
+          break;
+        }
+        case 'memo': {
+          await this.dailyNoteRepository.upsert(
+            [
+              {
+                planDate: createDailyDto.planDate,
+                user: { id: userId },
+                memo: createDailyDto.content,
+              },
+            ],
+            ['planDate'],
+          );
+          break;
+        }
+        case 'feel':
           {
-            planDate: planDate,
-            user: { id: userId },
-            emoji: emoji,
-            feel: feel,
-            memo: memo,
-          },
-        ],
-        ['planDate'],
-      );
+            await this.dailyNoteRepository.upsert(
+              [
+                {
+                  planDate: createDailyDto.planDate,
+                  user: { id: userId },
+                  feel: createDailyDto.content,
+                },
+              ],
+              ['planDate'],
+            );
+          }
+          break;
+      }
 
       const data = {
-        planDate: planDate,
-        emoji: emoji,
-        feel: feel,
-        memo: memo,
+        planDate: createDailyDto.planDate,
+        type,
+        content: createDailyDto.content,
       };
 
       return data;
