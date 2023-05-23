@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateDailyNoteDto {
@@ -5,12 +6,7 @@ export class CreateDailyNoteDto {
   @IsString()
   planDate!: string;
 
+  @IsNotEmpty()
   @IsString()
-  emoji?: string;
-
-  @IsString()
-  feel?: string;
-
-  @IsString()
-  memo?: string;
+  content?: string;
 }

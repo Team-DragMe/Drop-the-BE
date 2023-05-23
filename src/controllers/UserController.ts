@@ -75,7 +75,7 @@ export class DailyNoteController {
       await this.userService.updateProfileInfo(+userId, name, goal);
       return res
         .status(statusCode.OK)
-        .send(success(statusCode.OK, message.READ_PROFILE_SUCCESS));
+        .send(success(statusCode.OK, message.UPDATE_PROFILE_SUCCESS));
     } catch (error) {
       throw error;
     }
