@@ -54,3 +54,7 @@ export const getTimeBlockValidation = [
 ];
 
 export const setTimeBlockValidation = [param('planId').notEmpty()];
+
+export const dailyNoteTypeValidation = [
+  query('type').notEmpty().isIn(['emoji', 'feel', 'memo']),
+];
